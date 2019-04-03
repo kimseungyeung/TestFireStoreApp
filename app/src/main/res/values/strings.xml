@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">TestFireStoreApp</string>
+    <string name="insert_email">이메일을 입력해주세요</string>
+    <string name="insert_password">패스워드를 입력해주세요</string>
+    <string name="insert_password_length">패스워드는 6자이상만 사용가능합니다.</string>
+    <string name="email_duplicate">이미 존재하는 계정입니다.</string>
+    <string name="login_sucess">로그인 성공</string>
+    <string name="login_fail">로그인 실패</string>
+    <string name="join_sucess">계정생성 성공</string>
+    <string name="join_fail">계정생성 실패</string>
+    <string name="server_key">AIzaSyCxQCeGXEKkPcLsQJzfxKyJ1JIcNhQdCAc</string>
+    <string name="add_room">대화방을 생성하기위해 이메일을 입력해주세요</string>
+    <!--네비게이션 메뉴-->
+    <string name="sub_menu">서브메뉴</string>
+    <string name="menu_1">메뉴1</string>
+    <string name="menu_2">메뉴2</string>
+    <string name="menu_3">메뉴3</string>
+    <string name="menu_4">메뉴4</string>
+    <string name="menu_5">메뉴5</string>
+    <string name="search">검색</string>
+
+</resources>

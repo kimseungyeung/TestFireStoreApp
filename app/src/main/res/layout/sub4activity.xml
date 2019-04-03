@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue"
+    android:orientation="vertical">
+<CalendarView
+    android:id="@+id/calandar_view"
+    android:layout_width="match_parent"
+    android:layout_height="0dip"
+    android:layout_weight="5"/>
+    <EditText
+        android:id="@+id/edt_calandar_memo"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="4"
+        android:gravity="top"
+        android:bufferType="spannable"
+        android:scrollbars="vertical|horizontal"
+        android:background="@color/White"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1">
+        <Button
+            android:id="@+id/btn_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="camera"/>
+        <Button
+            android:id="@+id/btn_gal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="gal"/>
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="save"/>
+        <Button
+            android:id="@+id/btn_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="edit"/>
+    </LinearLayout>
+</LinearLayout>
+</LinearLayout>
