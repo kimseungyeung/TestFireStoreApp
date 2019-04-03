@@ -62,7 +62,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-//test12322
+//test123222
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener, GoogleMap.OnMarkerClickListener, GoogleApiClient.OnConnectionFailedListener {
     private static final LatLngBounds BOUNDS_INDIA = new LatLngBounds(
             new LatLng(-0, 0), new LatLng(0, 0));
