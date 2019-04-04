@@ -11,10 +11,13 @@
 <TextView
     android:id="@+id/tv_pname"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content"
+    android:background="@color/White"
+    android:textSize="20sp"/>
     <TextView
         android:id="@+id/tv_padress"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@color/Orange"/>
     </LinearLayout>
 </LinearLayout>
