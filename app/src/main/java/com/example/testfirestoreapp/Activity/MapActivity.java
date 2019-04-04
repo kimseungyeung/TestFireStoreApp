@@ -4,7 +4,13 @@ import android.Manifest;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -91,6 +97,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     LatLng ll ;
     Geocoder geocoder;
     ArrayList<Marker> selectedmarker;
+    SensorManager mySensorManager;
+    boolean sersorrunning=false;
+    Marker lotatem;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,6 +138,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         placesClient = Places.createClient(this);
         final PlaceAutoAdapter padapter = new PlaceAutoAdapter(this, BOUNDS_INDIA);
         ll_auto.setAdapter(padapter);
+        mySensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+        List<Sensor> mySensors = mySensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
+
+        if(mySensors.size() > 0){
+            mySensorManager.registerListener(msensorlistener, mySensors.get(0), SensorManager.SENSOR_DELAY_NORMAL);
+            sersorrunning = true;
+            Toast.makeText(this, "Start ORIENTATION Sensor", Toast.LENGTH_LONG).show();
+
+        }
+        else{
+            Toast.makeText(this, "No ORIENTATION Sensor", Toast.LENGTH_LONG).show();
+            sersorrunning = false;
+            finish();
+        }
 
 
         edt_search_location.addTextChangedListener(new TextWatcher() {
@@ -399,7 +422,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                             if(addresslist!=null) {
                                 addresslist.clear();
                             }
-                            addresslist = geocoder.getFromLocationName(pname, 10);
+                            addresslist = geocoder.getFromLocationName(padress, 10);
                             if(addresslist.size()!=0) {
                                 search(addresslist);
                             }else{
@@ -454,7 +477,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                                 Log.i("성공", prediction.getPlaceId());
                                 Log.i("성공", prediction.getPrimaryText(null).toString());
                                 Log.i("성공", prediction.getFullText(null).toString());
-                                PlaceData pp = new PlaceData(prediction.getPlaceId(),prediction.getPrimaryText(null),prediction.getFullText(null));
+                                PlaceData pp = new PlaceData(prediction.getPlaceId(),prediction.getFullText(null),prediction.getPrimaryText(null));
                                 resultList.add(pp);
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -508,4 +531,44 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         public TextView tv_padress, tv_pName;
         public LinearLayout ll_auto_item;
     }
+    public Bitmap setbit(Bitmap bitmapOrg,float met){
+        Matrix matrix = new Matrix();
+
+
+
+        matrix.postRotate(met);
+
+
+
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmapOrg, 50, 50, true);
+
+
+
+        Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+        return rotatedBitmap;
+
+    }
+    SensorEventListener msensorlistener = new SensorEventListener() {
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+           if(ll!=null) {
+               if (lotatem != null) {
+                   lotatem.remove();
+               }
+               Bitmap bb = BitmapFactory.decodeResource(getResources(), R.drawable.location_arrow);
+               Bitmap resultbit = setbit(bb, event.values[0]);
+               MarkerOptions marker2 = new MarkerOptions();
+               marker2.icon(BitmapDescriptorFactory.fromBitmap(resultbit));
+               marker2.position(new LatLng(ll.latitude, ll.longitude));
+               lotatem = mMap.addMarker(marker2);
+           }
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+        }
+    };
+
 }
