@@ -25,15 +25,14 @@
     <ListView
         android:id="@+id/list_auto"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="9"
+        android:layout_height="wrap_content"
         android:visibility="visible"/>
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="0dip"
     android:layout_weight="9"
     android:background="@color/Orange"
-    android:visibility="gone">
+    android:visibility="visible">
 
     <fragment
         android:id="@+id/maps"
