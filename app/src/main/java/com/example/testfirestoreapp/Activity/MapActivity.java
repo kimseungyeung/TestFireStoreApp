@@ -20,6 +20,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ import android.widget.Toast;
 import com.example.testfirestoreapp.Data.PlaceData;
 import com.example.testfirestoreapp.R;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Status;
@@ -56,8 +58,19 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
+import com.google.android.libraries.places.api.net.PlacesClient;
 
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -73,9 +86,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     List<Address> addresslist = null;
     MarkerOptions mylocation = null;
     Marker nowmarker = null;
-    FusedLocationProviderClient mFusedLocationProviderClient = null;
     ListView ll_auto;
-    GoogleApiClient GapiClient;
+    PlacesClient placesClient;
+    LatLng ll ;
+    Geocoder geocoder;
+    ArrayList<Marker> selectedmarker;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,9 +123,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         btn_zoomin.setOnClickListener(this);
         btn_search_location.setOnClickListener(this);
         btn_now_location.setOnClickListener(this);
-        ll_auto =(ListView)findViewById(R.id.list_auto);
-        final PlaceAutoAdapter padapter =new PlaceAutoAdapter(this,BOUNDS_INDIA);
+        ll_auto = (ListView) findViewById(R.id.list_auto);
+        geocoder = new Geocoder(getBaseContext());
+        Places.initialize(this, getString(R.string.API_KEY));
+        placesClient = Places.createClient(this);
+        final PlaceAutoAdapter padapter = new PlaceAutoAdapter(this, BOUNDS_INDIA);
         ll_auto.setAdapter(padapter);
+
+
         edt_search_location.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -119,7 +139,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                padapter.getFilter().filter(s.toString());
+                if(!s.toString().equals("")) {
+                    padapter.getFilter().filter(s.toString());
+                }else{
+                    padapter.clearlist();
+                }
             }
 
             @Override
@@ -127,16 +151,25 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
             }
         });
+        edt_search_location.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    padapter.clearlist();
+
+                }
+            }
+        });
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // Add a marker in Sydney, Australia, and move the camera.
 //        LatLng sydney = new LatLng(-34, 151);
 //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap = googleMap;
+
+        // Add a marker in Sydney, Australia, and move the camera.
 
     }
 
@@ -148,6 +181,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             if (mylocation == null) {
                 BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_location_normal));
                 mylocation = setmarker(mMap, null, "", nowlocation);
+                ll=new LatLng(nowlocation.latitude,nowlocation.longitude);
             } else {
                 mylocation.position(nowlocation);
             }
@@ -208,7 +242,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
                 String g = edt_search_location.getText().toString();
 
-                Geocoder geocoder = new Geocoder(getBaseContext());
+
 
 
                 try {
@@ -242,9 +276,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_location_normal));
         MarkerOptions markerOptions = setmarker(mMap, bd, addressText, latLng);
 
-        mMap.clear();
-        mMap.addMarker(markerOptions);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        if(selectedmarker!=null){
+            for(int i=0; i<selectedmarker.size(); i++){
+                selectedmarker.get(i).remove();
+            }
+            selectedmarker.clear();
+        }
+       selectedmarker = new ArrayList<>();
+       Marker dd= mMap.addMarker(markerOptions);
+        selectedmarker.add(dd);
+       mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
         mMap.setOnMarkerClickListener(this);
 
@@ -304,15 +345,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             this.context = ctx;
             this.bounds = bd;
             this.layoutInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            resultList=new ArrayList<>();
         }
 
         public void clearlist() {
             resultList.clear();
+            notifyDataSetChanged();
         }
 
         @Override
         public int getCount() {
-            if(resultList==null){
+            if (resultList == null) {
                 return 0;
             }
             return this.resultList.size();
@@ -320,30 +363,55 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
         @Override
         public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public Object getItem(int position) {
             return position;
         }
 
         @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder=null;
-            if(convertView==null){
-                convertView =layoutInflater.inflate(R.layout.item_place_auto,parent,false);
+            ViewHolder holder;
+
+            if (convertView == null) {
+                convertView = layoutInflater.inflate(R.layout.item_place_auto, parent, false);
                 holder = new ViewHolder();
 
-                holder.tv_pName =(TextView) convertView.findViewById(R.id.tv_pname);
-                holder.tv_padress=(TextView) convertView.findViewById(R.id.tv_padress);
-                holder.ll_auto_item=(LinearLayout)convertView.findViewById(R.id.ll_auto_item);
+                holder.tv_pName = (TextView) convertView.findViewById(R.id.tv_pname);
+                holder.tv_padress = (TextView) convertView.findViewById(R.id.tv_padress);
+                holder.ll_auto_item = (LinearLayout) convertView.findViewById(R.id.ll_auto_item);
                 convertView.setTag(holder);
-            }else{
-                convertView.getTag();
+            } else {
+                holder = (ViewHolder) convertView.getTag();
             }
-            holder.tv_pName.setText(resultList.get(position).placename);
-            holder.tv_padress.setText(resultList.get(position).description);
+                String pname=resultList.get(position).getPlacename().toString();
+                String padress =resultList.get(position).getDescription().toString();
+
+                holder.tv_pName.setText(pname);
+                holder.tv_padress.setText(padress);
+                holder.ll_auto_item.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_location_normal));
+                        try {
+                            if(addresslist!=null) {
+                                addresslist.clear();
+                            }
+                            addresslist = geocoder.getFromLocationName(pname, 10);
+                            if(addresslist.size()!=0) {
+                                search(addresslist);
+                            }else{
+                                Toast.makeText(context,"검색결과가 없습니다",Toast.LENGTH_LONG).show();
+                            }
+                        }catch (IOException e){
+
+                        }
+                        clearlist();
+                    }
+                });
+
             return convertView;
         }
 
@@ -353,13 +421,48 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 @Override
                 protected FilterResults performFiltering(CharSequence constraint) {
                     FilterResults results = new FilterResults();
-
+                    resultList.clear();
+                    resultList = new ArrayList<>();
                     if (constraint != null) {
 
 
                         //(제약) 검색 문자열에 대한 자동 완성 API를 쿼리하십시오.
+                        AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
+// Create a RectangularBounds object.
+                        RectangularBounds bounds=null;
 
+                            bounds = RectangularBounds.newInstance(
+                                    new LatLng(-0, 0),
+                                    new LatLng(0, 0));
+                        if(mylocation!=null) {
+                            bounds = RectangularBounds.newInstance(
+                                    new LatLng(ll.latitude-0.1, ll.longitude),
+                                    new LatLng(ll.latitude,ll.longitude));
+                        }
 
+                        FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                                .setLocationBias(bounds)
+//                                .setLocationRestriction(bounds)
+                                .setCountry("kr")
+                                .setTypeFilter(TypeFilter.ESTABLISHMENT)
+                                .setSessionToken(token)
+                                .setQuery(constraint.toString().trim())
+                                .build();
+
+                        placesClient.findAutocompletePredictions(request).addOnSuccessListener((response) -> {
+                            for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
+                                Log.i("성공", prediction.getPlaceId());
+                                Log.i("성공", prediction.getPrimaryText(null).toString());
+                                Log.i("성공", prediction.getFullText(null).toString());
+                                PlaceData pp = new PlaceData(prediction.getPlaceId(),prediction.getPrimaryText(null),prediction.getFullText(null));
+                                resultList.add(pp);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.i("실패", e.getMessage().toString());
+                            }
+                        });
 
 
                         if (resultList != null) {
