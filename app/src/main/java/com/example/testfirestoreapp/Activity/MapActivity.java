@@ -399,6 +399,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             }
             selectedmarker = new ArrayList<>();
             Marker dd = mMap.addMarker(markerOptions);
+            dd.showInfoWindow();
             selectedmarker.add(dd);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
