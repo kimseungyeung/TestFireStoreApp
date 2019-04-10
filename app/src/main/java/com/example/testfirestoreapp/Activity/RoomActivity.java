@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.testfirestoreapp.Data.ChatData;
 import com.example.testfirestoreapp.Data.RoomData;
+import com.example.testfirestoreapp.InCallback;
 import com.example.testfirestoreapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -58,6 +59,8 @@ public class RoomActivity extends AppCompatActivity implements View.OnClickListe
     ArrayList<String> uidlist = null;
     public ArrayList<ArrayList<String>> uidlists = null;
     ArrayList<String> tokenlist = null;
+    InCallback incall;
+    MainPagerActivity mp = new MainPagerActivity();
     public ArrayList<ArrayList<String>> tokenlists = null;
 
     @Override
@@ -80,6 +83,8 @@ public class RoomActivity extends AppCompatActivity implements View.OnClickListe
         roomdata = new ArrayList<RoomData>();
         uidlists = new ArrayList<ArrayList<String>>();
         tokenlists = new ArrayList<ArrayList<String>>();
+
+        incall =(InCallback)mp;
         databaseReference.child("room").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -222,7 +227,7 @@ public class RoomActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            room_Glide(fa.getCurrentUser().getEmail(), holder.iv_room_profile);
+            incall.firebaseGlide(fa.getCurrentUser().getEmail(),"profile.jpg", holder.iv_room_profile,context);
             holder.tv_roomname.setText(roomdata.get(position).getRoomName());
             holder.tv_room_text.setText(roomdata.get(position).getRoomText());
             convertView.setOnClickListener(new View.OnClickListener() {
@@ -247,18 +252,7 @@ public class RoomActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void room_Glide(String email, ImageView iv) {
-        // Reference to an image file in Cloud Storage
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        StorageReference islandRef = storageRef.child("profilepicture/" + email + "/" + "profile.jpg");
-// ImageView in your Activity
 
-
-// Download directly from StorageReference using Glide
-// (See MyAppGlideModule for Loader registration)
-        Glide.with(context).load(islandRef).apply(RequestOptions.circleCropTransform()).into(iv);
-
-    }
 
     public void getuidlist(final String roomname, final ArrayList<String> emailist) {
 

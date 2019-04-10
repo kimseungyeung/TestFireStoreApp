@@ -50,7 +50,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import javax.annotation.Nullable;
 
@@ -417,5 +420,12 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
                 Log.d("성공", "업로드성공");
             }
         });
+    }
+    public String nowtime(){
+        SimpleDateFormat formatter = new SimpleDateFormat ( "yyyy년MM월dd일 HH시mm분ss초", Locale.KOREA );
+        Date currentTime = new Date ( );
+        String dTime = formatter.format ( currentTime );
+
+        return dTime;
     }
 }

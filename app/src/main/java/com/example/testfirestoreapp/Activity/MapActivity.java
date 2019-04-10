@@ -18,6 +18,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -59,6 +60,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -94,12 +97,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     Marker nowmarker = null;
     ListView ll_auto;
     PlacesClient placesClient;
-    LatLng ll ;
+    LatLng ll;
     Geocoder geocoder;
     ArrayList<Marker> selectedmarker;
     SensorManager mySensorManager;
-    boolean sersorrunning=false;
+    boolean sersorrunning = false;
     Marker lotatem;
+    Circle circle;
+    CircleOptions circleo;
+    public boolean checkzoom = true;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,16 +145,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         placesClient = Places.createClient(this);
         final PlaceAutoAdapter padapter = new PlaceAutoAdapter(this, BOUNDS_INDIA);
         ll_auto.setAdapter(padapter);
-        mySensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+        mySensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         List<Sensor> mySensors = mySensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
 
-        if(mySensors.size() > 0){
+        if (mySensors.size() > 0) {
             mySensorManager.registerListener(msensorlistener, mySensors.get(0), SensorManager.SENSOR_DELAY_NORMAL);
             sersorrunning = true;
             Toast.makeText(this, "Start ORIENTATION Sensor", Toast.LENGTH_LONG).show();
 
-        }
-        else{
+        } else {
             Toast.makeText(this, "No ORIENTATION Sensor", Toast.LENGTH_LONG).show();
             sersorrunning = false;
             finish();
@@ -162,9 +168,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(!s.toString().equals("")) {
+                if (!s.toString().equals("")) {
                     padapter.getFilter().filter(s.toString());
-                }else{
+                } else {
                     padapter.clearlist();
                 }
             }
@@ -177,12 +183,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         edt_search_location.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus){
+                if (!hasFocus) {
                     padapter.clearlist();
 
                 }
             }
         });
+
     }
 
     @Override
@@ -196,22 +203,38 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     }
 
-    public boolean checkzoom = true;
+
     LocationListener lmlistener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
             LatLng nowlocation = new LatLng(location.getLatitude(), location.getLongitude());
-            if (mylocation == null) {
-                BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_location_normal));
-                mylocation = setmarker(mMap, null, "", nowlocation);
-                ll=new LatLng(nowlocation.latitude,nowlocation.longitude);
-            } else {
-                mylocation.position(nowlocation);
-            }
             if (nowmarker != null) {
                 nowmarker.remove();
             }
+            if (circle != null) {
+                circle.remove();
+            }
+            if (mylocation == null) {
+                BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.now_location_blue));
+                mylocation = setmarker(mMap, bd, "", nowlocation, true);
+                ll = new LatLng(nowlocation.latitude, nowlocation.longitude);
+
+            } else {
+                mylocation.position(nowlocation);
+                ll = new LatLng(nowlocation.latitude, nowlocation.longitude);
+
+
+            }
+            if (circleo == null) {
+                circleo = setcircle(nowlocation, 1);
+            } else {
+                circleo.center(nowlocation);
+            }
             nowmarker = mMap.addMarker(mylocation);
+            circle = mMap.addCircle(circleo);
+//;            if(t.getState()==Thread.State.NEW){
+//                t.start();
+//            }
             if (checkzoom) {
                 checkzoom = false;
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(nowlocation, 17));
@@ -233,6 +256,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
         }
     };
+    Handler h = new Handler();
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -251,66 +275,134 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
+    public void set(boolean checkimage) {
+
+        try {
+            if (checkimage) {
+                BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.now_location));
+//                mylocation.icon(bd);
+//                if(nowmarker!=null) {
+//                    nowmarker.remove();
+//                }
+//                nowmarker =mMap.addMarker(mylocation);
+                nowmarker.setIcon(bd);
+
+            } else {
+                BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.now_location_blue));
+//                mylocation.icon(bd);
+//                if(nowmarker!=null) {
+//                    nowmarker.remove();
+//                }
+//                nowmarker =mMap.addMarker(mylocation);
+                nowmarker.setIcon(bd);
+
+            }
+        } catch (Exception e) {
+        }
+
+    }
+
+    ;
+    public boolean checktt = false;
+    Thread t = new Thread() {
+        @Override
+        public void run() {
+            super.run();
+            while (true) {
+                try {
+
+                    if (checktt) {
+
+                        Thread.sleep(1000);
+                        set(checktt);
+                        checktt = false;
+                    } else {
+
+                        Thread.sleep(1000);
+                        set(checktt);
+                        checktt = true;
+                    }
+
+                } catch (InterruptedException e) {
+
+                }
+            }
+        }
+    };
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_zoomin:
-                ;
                 mMap.animateCamera(CameraUpdateFactory.zoomIn());
                 break;
             case R.id.btn_zoomout:
                 mMap.animateCamera(CameraUpdateFactory.zoomOut());
                 break;
             case R.id.btn_search_location:
-
                 String g = edt_search_location.getText().toString();
 
-
-
-
-                try {
-                    // Getting a maximum of 3 Address that matches the input
-                    // text
-                    addresslist = geocoder.getFromLocationName(g, 10);
-                    if (addresslist != null && !addresslist.equals(""))
-                        search(addresslist);
-
-                } catch (Exception e) {
-
-                }
+//                try {
+////
+////                    addresslist = geocoder.getFromLocationName(g, 10);
+////                    if (addresslist != null && !addresslist.equals(""))
+////                        search(addresslist.get(0),true);
+////
+////                } catch (Exception e) {
+////
+////                }
+//                sethospital(g);
+                Thread tt = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        sethospital(g);
+                    }
+                });
+                tt.start();
                 break;
             case R.id.btn_now_location:
-                zoomnowlocation();
+//                zoomnowlocation();
+                if (check) {
+                    set(true);
+                    check = false;
+                } else {
+                    set(false);
+                    check = true;
+                }
                 break;
         }
     }
 
-    protected void search(List<Address> addresses) {
+    boolean check = false;
 
-        Address address = (Address) addresses.get(0);
-        double home_long = address.getLongitude();
-        double home_lat = address.getLatitude();
-        LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+    protected void search(Address addresses,boolean reset) {
 
-        String addressText = String.format(
-                "%s, %s",
-                address.getMaxAddressLineIndex() > 0 ? address
-                        .getAddressLine(0) : "", address.getCountryName());
-        BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_location_normal));
-        MarkerOptions markerOptions = setmarker(mMap, bd, addressText, latLng);
+            Address address = (Address) addresses;
+            double home_long = address.getLongitude();
+            double home_lat = address.getLatitude();
+            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
 
-        if(selectedmarker!=null){
-            for(int i=0; i<selectedmarker.size(); i++){
-                selectedmarker.get(i).remove();
+            String addressText = String.format(
+                    "%s, %s",
+                    address.getMaxAddressLineIndex() > 0 ? address
+                            .getAddressLine(0) : "", address.getCountryName());
+            BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_location_normal));
+            MarkerOptions markerOptions = setmarker(mMap, bd, addressText, latLng, false);
+            markerOptions.title(addressText);
+            if(reset) {
+                if (selectedmarker != null) {
+                    for (int i = 0; i < selectedmarker.size(); i++) {
+                        selectedmarker.get(i).remove();
+                    }
+                    selectedmarker.clear();
+                }
             }
-            selectedmarker.clear();
-        }
-       selectedmarker = new ArrayList<>();
-       Marker dd= mMap.addMarker(markerOptions);
-        selectedmarker.add(dd);
-       mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
-        mMap.setOnMarkerClickListener(this);
+            selectedmarker = new ArrayList<>();
+            Marker dd = mMap.addMarker(markerOptions);
+            selectedmarker.add(dd);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+            mMap.setOnMarkerClickListener(this);
 
 
     }
@@ -322,6 +414,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         if (marker.getTitle() != null) {
             if (clickcheck) {
                 clickcheck = false;
+
                 marker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_location_normal)));
             } else {
                 clickcheck = true;
@@ -331,7 +424,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         return true;
     }
 
-    public MarkerOptions setmarker(GoogleMap map, BitmapDescriptor bd, String title, LatLng location) {
+    public MarkerOptions setmarker(GoogleMap map, BitmapDescriptor bd, String title, LatLng location, boolean centerset) {
         MarkerOptions marker = new MarkerOptions();
         marker.position(location);
         if (bd != null) {
@@ -340,7 +433,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         if (!title.equals("")) {
             marker.title(title);
         }
+        if (centerset) {
+            marker.anchor(0.5f, 0.5f);
+        }
         return marker;
+    }
+
+    public CircleOptions setcircle(LatLng position, double radius) {
+        CircleOptions circle = new CircleOptions().center(position)
+                .radius(radius)
+                .strokeWidth(1f)
+                .strokeColor(R.color.colorPrimary)
+                .fillColor(getColor(R.color.Orange));
+
+        return circle;
     }
 
     public void zoomnowlocation() {
@@ -368,7 +474,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             this.context = ctx;
             this.bounds = bd;
             this.layoutInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            resultList=new ArrayList<>();
+            resultList = new ArrayList<>();
         }
 
         public void clearlist() {
@@ -409,31 +515,31 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-                String pname=resultList.get(position).getPlacename().toString();
-                String padress =resultList.get(position).getDescription().toString();
+            String pname = resultList.get(position).getPlacename().toString();
+            String padress = resultList.get(position).getDescription().toString();
 
-                holder.tv_pName.setText(pname);
-                holder.tv_padress.setText(padress);
-                holder.ll_auto_item.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_location_normal));
-                        try {
-                            if(addresslist!=null) {
-                                addresslist.clear();
-                            }
-                            addresslist = geocoder.getFromLocationName(padress, 10);
-                            if(addresslist.size()!=0) {
-                                search(addresslist);
-                            }else{
-                                Toast.makeText(context,"검색결과가 없습니다",Toast.LENGTH_LONG).show();
-                            }
-                        }catch (IOException e){
-
+            holder.tv_pName.setText(pname);
+            holder.tv_padress.setText(padress);
+            holder.ll_auto_item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_location_normal));
+                    try {
+                        if (addresslist != null) {
+                            addresslist.clear();
                         }
-                        clearlist();
+                        addresslist = geocoder.getFromLocationName(padress, 10);
+                        if (addresslist.size() != 0) {
+                            search(addresslist.get(0),true);
+                        } else {
+                            Toast.makeText(context, "검색결과가 없습니다", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (IOException e) {
+
                     }
-                });
+                    clearlist();
+                }
+            });
 
             return convertView;
         }
@@ -452,15 +558,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                         //(제약) 검색 문자열에 대한 자동 완성 API를 쿼리하십시오.
                         AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
 // Create a RectangularBounds object.
-                        RectangularBounds bounds=null;
+                        RectangularBounds bounds = null;
 
+                        bounds = RectangularBounds.newInstance(
+                                new LatLng(-0, 0),
+                                new LatLng(0, 0));
+                        if (mylocation != null) {
                             bounds = RectangularBounds.newInstance(
-                                    new LatLng(-0, 0),
-                                    new LatLng(0, 0));
-                        if(mylocation!=null) {
-                            bounds = RectangularBounds.newInstance(
-                                    new LatLng(ll.latitude-0.1, ll.longitude),
-                                    new LatLng(ll.latitude,ll.longitude));
+                                    new LatLng(ll.latitude - 0.1, ll.longitude),
+                                    new LatLng(ll.latitude, ll.longitude));
                         }
 
                         FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
@@ -477,7 +583,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                                 Log.i("성공", prediction.getPlaceId());
                                 Log.i("성공", prediction.getPrimaryText(null).toString());
                                 Log.i("성공", prediction.getFullText(null).toString());
-                                PlaceData pp = new PlaceData(prediction.getPlaceId(),prediction.getFullText(null),prediction.getPrimaryText(null));
+                                PlaceData pp = new PlaceData(prediction.getPlaceId(), prediction.getFullText(null), prediction.getPrimaryText(null));
                                 resultList.add(pp);
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -531,38 +637,38 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         public TextView tv_padress, tv_pName;
         public LinearLayout ll_auto_item;
     }
-    public Bitmap setbit(Bitmap bitmapOrg,float met){
-        Matrix matrix = new Matrix();
 
+    public Bitmap setbit(Bitmap bitmapOrg, float met) {
+        Matrix matrix = new Matrix();
 
 
         matrix.postRotate(met);
 
 
-
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmapOrg, 50, 50, true);
-
 
 
         Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
         return rotatedBitmap;
 
     }
+
     SensorEventListener msensorlistener = new SensorEventListener() {
 
         @Override
         public void onSensorChanged(SensorEvent event) {
-           if(ll!=null) {
-               if (lotatem != null) {
-                   lotatem.remove();
-               }
-               Bitmap bb = BitmapFactory.decodeResource(getResources(), R.drawable.location_arrow);
-               Bitmap resultbit = setbit(bb, event.values[0]);
-               MarkerOptions marker2 = new MarkerOptions();
-               marker2.icon(BitmapDescriptorFactory.fromBitmap(resultbit));
-               marker2.position(new LatLng(ll.latitude, ll.longitude));
-               lotatem = mMap.addMarker(marker2);
-           }
+            if (ll != null) {
+                if (lotatem != null) {
+                    lotatem.remove();
+                }
+                Bitmap bb = BitmapFactory.decodeResource(getResources(), R.drawable.location_arrow);
+                Bitmap resultbit = setbit(bb, event.values[0]);
+                MarkerOptions marker2 = new MarkerOptions();
+                marker2.icon(BitmapDescriptorFactory.fromBitmap(resultbit));
+                marker2.position(new LatLng(ll.latitude, ll.longitude));
+
+                lotatem = mMap.addMarker(marker2);
+            }
         }
 
         @Override
@@ -570,5 +676,70 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
         }
     };
+
+    List<Address> resultset=null;
+    LatLng ll2;
+    public void sethospital(String d){
+
+        ArrayList<Address> resultl= new ArrayList<>();
+        RectangularBounds bounds = null;
+        AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
+        bounds = RectangularBounds.newInstance(
+                new LatLng(-0, 0),
+                new LatLng(0, 0));
+        if (mylocation != null) {
+            bounds = RectangularBounds.newInstance(
+                    new LatLng(ll.latitude - 0.1, ll.longitude),
+                    new LatLng(ll.latitude, ll.longitude));
+        }
+
+        FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                .setLocationBias(bounds)
+//                                .setLocationRestriction(bounds)
+                .setCountry("kr")
+                .setTypeFilter(TypeFilter.REGIONS)
+                .setSessionToken(token)
+                .setQuery(d)
+                .build();
+
+        placesClient.findAutocompletePredictions(request).addOnSuccessListener((response) -> {
+            for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
+                Log.i("성공", prediction.getPlaceId());
+
+                PlaceData pp = new PlaceData(prediction.getPlaceId(), prediction.getFullText(null), prediction.getPrimaryText(null));
+                try {
+                    resultset=geocoder.getFromLocationName(pp.getDescription().toString(), 10);
+                    if(resultset.size()!=0)
+                       ll2= new LatLng(resultset.get(0).getLatitude(), resultset.get(0).getLongitude());
+                    if (getDistance(ll,ll2) >= 1000) {
+                        search(resultset.get(0), false);
+                    }
+                }catch (IOException e){
+                    Log.e("실패",e.getMessage());
+                }
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.i("실패", e.getMessage().toString());
+                return;
+            }
+        });
+
+
+    }
+    public double getDistance(LatLng LatLng1, LatLng LatLng2) {
+        double distance = 0;
+        Location locationA = new Location("A");
+        locationA.setLatitude(LatLng1.latitude);
+        locationA.setLongitude(LatLng1.longitude);
+        Location locationB = new Location("B");
+        locationB.setLatitude(LatLng2.latitude);
+        locationB.setLongitude(LatLng2.longitude);
+        distance = locationA.distanceTo(locationB);
+
+        return distance;
+    }
 
 }

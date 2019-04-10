@@ -212,7 +212,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             FirebaseUser user = mAuth.getCurrentUser();
                             Log.d("성공", "로그인성공");
                             toastmessage(getApplicationContext(), getString(R.string.login_sucess));
-                            String email = edt_email.getText().toString();
+                            String email = edt_email.getText().toString().trim();
                             String password = edt_password.getText().toString();
                             if (chk_save_email.isChecked()) {
 
@@ -228,7 +228,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             docRef.update("devicetoken", token).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-
+                                    Log.e("성공","토큰업데이트 성공");
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.e("실패",e.getMessage().toString());
                                 }
                             });
 

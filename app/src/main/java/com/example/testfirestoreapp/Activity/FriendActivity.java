@@ -121,7 +121,7 @@ public class FriendActivity extends AppCompatActivity implements View.OnClickLis
                 holder.tv_friend_name=(TextView) convertView.findViewById(R.id.tv_friend_name);
                 convertView.setTag(holder);
             }else{
-                convertView.getTag();
+               holder= (Viewholder)convertView.getTag();
             }
             holder.iv_friend_profile.setImageResource(R.drawable.common_full_open_on_phone);
             holder.tv_friend_name.setText(fdat.get(position).getFriendname());
