@@ -320,6 +320,7 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
 
                                 break;
                             case "메뉴4":
+                                startActivity(new Intent(context,InsertActivity.class));
                                 break;
                             case "메뉴5":
                                 break;
@@ -428,4 +429,5 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
 
         return dTime;
     }
+
 }

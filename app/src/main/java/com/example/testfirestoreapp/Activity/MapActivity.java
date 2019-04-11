@@ -32,6 +32,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -66,6 +67,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -76,6 +78,7 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
 
@@ -91,7 +94,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     private GoogleMap mMap;
     LocationManager lm;
     Button btn_zoomin, btn_zoomout, btn_search_location, btn_now_location;
-    EditText edt_search_location;
+    //    EditText edt_search_location;
+    AutoCompleteTextView edt_search_location;
     List<Address> addresslist = null;
     MarkerOptions mylocation = null;
     Marker nowmarker = null;
@@ -132,7 +136,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 //        lm.requestLocationUpdates(null,0,2,lmlistener);
         btn_zoomin = (Button) findViewById(R.id.btn_zoomin);
         btn_zoomout = (Button) findViewById(R.id.btn_zoomout);
-        edt_search_location = (EditText) findViewById(R.id.edt_search_location);
+//        edt_search_location = (EditText) findViewById(R.id.edt_search_location);
+        edt_search_location = (AutoCompleteTextView) findViewById(R.id.edt_search_location);
         btn_search_location = (Button) findViewById(R.id.btn_search_location);
         btn_now_location = (Button) findViewById(R.id.btn_now_location);
         btn_zoomout.setOnClickListener(this);
@@ -144,7 +149,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         Places.initialize(this, getString(R.string.API_KEY));
         placesClient = Places.createClient(this);
         final PlaceAutoAdapter padapter = new PlaceAutoAdapter(this, BOUNDS_INDIA);
-        ll_auto.setAdapter(padapter);
+//        ll_auto.setAdapter(padapter);
+        edt_search_location.setAdapter(padapter);
         mySensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         List<Sensor> mySensors = mySensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
 
@@ -168,16 +174,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!s.toString().equals("")) {
-                    padapter.getFilter().filter(s.toString());
-                } else {
-                    padapter.clearlist();
-                }
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                if (!s.toString().equals("")) {
+                    padapter.clearlist();
+                    padapter.getFilter().filter(s.toString());
+                } else {
+                    padapter.clearlist();
+                }
             }
         });
         edt_search_location.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -343,22 +350,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 String g = edt_search_location.getText().toString();
 
 //                try {
-////
-////                    addresslist = geocoder.getFromLocationName(g, 10);
-////                    if (addresslist != null && !addresslist.equals(""))
-////                        search(addresslist.get(0),true);
-////
-////                } catch (Exception e) {
-////
-////                }
-//                sethospital(g);
-                Thread tt = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        sethospital(g);
-                    }
-                });
-                tt.start();
+                    sets(g);
+//                    addresslist = geocoder.getFromLocationName(g, 10);
+//                    if (addresslist != null && !addresslist.equals(""))
+//                        search(addresslist.get(0), true);
+//
+//                } catch (Exception e) {
+//
+//                }
+
+
                 break;
             case R.id.btn_now_location:
 //                zoomnowlocation();
@@ -372,38 +373,107 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 break;
         }
     }
+    public void sets(String s){
+        ArrayList<String> ss= new ArrayList<>();
+        ArrayList<String> hh= new ArrayList<>();
+        AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
+        RectangularBounds  bounds = RectangularBounds.newInstance(
+                new LatLng(-0, 0),
+                new LatLng(0, 0));
+        if (mylocation != null) {
+            bounds = RectangularBounds.newInstance(
+                    new LatLng(ll.latitude - 0.0015, ll.longitude-0.0015),
+                    new LatLng(ll.latitude+0.0015, ll.longitude+0.0015));
 
-    boolean check = false;
+        }
 
-    protected void search(Address addresses,boolean reset) {
+        Toast.makeText(this,String.valueOf(getDistance(bounds.getNortheast(),bounds.getSouthwest())),Toast.LENGTH_LONG).show();
+        FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                //.setLocationBias(bounds)  //범위무제한
+                                .setLocationRestriction(bounds) //범위제한
+                .setCountry("kr")
+                .setTypeFilter(TypeFilter.ESTABLISHMENT)
+                .setSessionToken(token)
+                .setQuery(s.trim())
+//                .setQuery(Place.Type.HOSPITAL.name())
+                .build();
+        PolygonOptions ppp = new PolygonOptions();
+        ppp.add(bounds.getNortheast());
+        ppp.add(bounds.getSouthwest());
 
-            Address address = (Address) addresses;
-            double home_long = address.getLongitude();
-            double home_lat = address.getLatitude();
-            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+        CircleOptions cc= new CircleOptions();
+        cc.center(bounds.getNortheast());
+        cc.radius(10f);
+        cc.strokeColor(getResources().getColor(R.color.Orange));
+        CircleOptions bb= new CircleOptions();
+        bb.center(bounds.getSouthwest());
+        bb.radius(10f);
+        bb.strokeColor(getResources().getColor(R.color.Orange));
+        mMap.addPolygon(ppp);
+        mMap.addCircle(cc);
+        mMap.addCircle(bb);
+        placesClient.findAutocompletePredictions(request).addOnSuccessListener((response) -> {
+            for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
+                Log.i("주변성공", prediction.getPlaceId());
+                Log.i("주변성공", prediction.getPrimaryText(null).toString());
+                Log.i("주변성공", prediction.getFullText(null).toString());
+               String dd= prediction.getPlaceTypes().toString();
+                PlaceData pp = new PlaceData(prediction.getPlaceId(), prediction.getFullText(null), prediction.getPrimaryText(null));
+                ss.add(prediction.getFullText(null).toString());
+                hh.add(prediction.getPrimaryText(null).toString());
 
-            String addressText = String.format(
-                    "%s, %s",
-                    address.getMaxAddressLineIndex() > 0 ? address
-                            .getAddressLine(0) : "", address.getCountryName());
-            BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_location_normal));
-            MarkerOptions markerOptions = setmarker(mMap, bd, addressText, latLng, false);
-            markerOptions.title(addressText);
-            if(reset) {
-                if (selectedmarker != null) {
-                    for (int i = 0; i < selectedmarker.size(); i++) {
-                        selectedmarker.get(i).remove();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(Exception e) {
+                Log.i("주변실패", e.getMessage().toString());
+            }
+
+        }).addOnCompleteListener(new OnCompleteListener<FindAutocompletePredictionsResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<FindAutocompletePredictionsResponse> task) {
+                Log.i("주변완료", "검색종료");
+                for (int i = 0; i < ss.size(); i++) {
+                    try {
+                        addresslist = geocoder.getFromLocationName(ss.get(i), 10);
+                    } catch (IOException e) {
+
                     }
-                    selectedmarker.clear();
+                    if(addresslist.size()!=0)
+                    search(addresslist.get(0),hh.get(i), false);
                 }
             }
-            selectedmarker = new ArrayList<>();
-            Marker dd = mMap.addMarker(markerOptions);
-            dd.showInfoWindow();
-            selectedmarker.add(dd);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
-            mMap.setOnMarkerClickListener(this);
+        });
+
+    }
+    boolean check = false;
+
+    protected void search(Address addresses,String name, boolean reset) {
+
+        Address address = (Address) addresses;
+        double home_long = address.getLongitude();
+        double home_lat = address.getLatitude();
+        LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+
+        String addressText = name + " " + address.getCountryName();
+        BitmapDescriptor bd = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_location_normal));
+        MarkerOptions markerOptions = setmarker(mMap, bd, addressText, latLng, false);
+        markerOptions.title(addressText);
+        if (reset) {
+            if (selectedmarker != null) {
+                for (int i = 0; i < selectedmarker.size(); i++) {
+                    selectedmarker.get(i).remove();
+                }
+                selectedmarker.clear();
+                mMap.clear();
+            }
+        }
+        selectedmarker = new ArrayList<>();
+        Marker dd = mMap.addMarker(markerOptions);
+        selectedmarker.add(dd);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+        mMap.setOnMarkerClickListener(this);
 
 
     }
@@ -415,10 +485,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         if (marker.getTitle() != null) {
             if (clickcheck) {
                 clickcheck = false;
-
+                marker.hideInfoWindow();
                 marker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_location_normal)));
             } else {
                 clickcheck = true;
+                marker.showInfoWindow();
                 marker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_location_clicked)));
             }
         }
@@ -445,7 +516,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 .radius(radius)
                 .strokeWidth(1f)
                 .strokeColor(R.color.colorPrimary)
-                .fillColor(getColor(R.color.Orange));
+                .fillColor(getResources().getColor(R.color.Orange));
 
         return circle;
     }
@@ -516,6 +587,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
+
             String pname = resultList.get(position).getPlacename().toString();
             String padress = resultList.get(position).getDescription().toString();
 
@@ -531,7 +603,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                         }
                         addresslist = geocoder.getFromLocationName(padress, 10);
                         if (addresslist.size() != 0) {
-                            search(addresslist.get(0),true);
+                            search(addresslist.get(0),pname, true);
                         } else {
                             Toast.makeText(context, "검색결과가 없습니다", Toast.LENGTH_LONG).show();
                         }
@@ -558,7 +630,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
                         //(제약) 검색 문자열에 대한 자동 완성 API를 쿼리하십시오.
                         AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-// Create a RectangularBounds object.
+                        // Create a RectangularBounds object.
                         RectangularBounds bounds = null;
 
                         bounds = RectangularBounds.newInstance(
@@ -586,6 +658,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                                 Log.i("성공", prediction.getFullText(null).toString());
                                 PlaceData pp = new PlaceData(prediction.getPlaceId(), prediction.getFullText(null), prediction.getPrimaryText(null));
                                 resultList.add(pp);
+                                notifyDataSetChanged();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -678,58 +751,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
     };
 
-    List<Address> resultset=null;
-    LatLng ll2;
-    public void sethospital(String d){
 
-        ArrayList<Address> resultl= new ArrayList<>();
-        RectangularBounds bounds = null;
-        AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-        bounds = RectangularBounds.newInstance(
-                new LatLng(-0, 0),
-                new LatLng(0, 0));
-        if (mylocation != null) {
-            bounds = RectangularBounds.newInstance(
-                    new LatLng(ll.latitude - 0.1, ll.longitude),
-                    new LatLng(ll.latitude, ll.longitude));
-        }
-
-        FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                .setLocationBias(bounds)
-//                                .setLocationRestriction(bounds)
-                .setCountry("kr")
-                .setTypeFilter(TypeFilter.REGIONS)
-                .setSessionToken(token)
-                .setQuery(d)
-                .build();
-
-        placesClient.findAutocompletePredictions(request).addOnSuccessListener((response) -> {
-            for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
-                Log.i("성공", prediction.getPlaceId());
-
-                PlaceData pp = new PlaceData(prediction.getPlaceId(), prediction.getFullText(null), prediction.getPrimaryText(null));
-                try {
-                    resultset=geocoder.getFromLocationName(pp.getDescription().toString(), 10);
-                    if(resultset.size()!=0)
-                       ll2= new LatLng(resultset.get(0).getLatitude(), resultset.get(0).getLongitude());
-                    if (getDistance(ll,ll2) >= 1000) {
-                        search(resultset.get(0), false);
-                    }
-                }catch (IOException e){
-                    Log.e("실패",e.getMessage());
-                }
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.i("실패", e.getMessage().toString());
-                return;
-            }
-        });
-
-
-    }
     public double getDistance(LatLng LatLng1, LatLng LatLng2) {
         double distance = 0;
         Location locationA = new Location("A");

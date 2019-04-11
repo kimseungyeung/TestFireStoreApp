@@ -10,11 +10,16 @@
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="horizontal">
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/edt_search_location"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="8"/>
+        <!--<EditText-->
+            <!--android:id="@+id/edt_search_location"-->
+            <!--android:layout_width="0dip"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="8"/>-->
         <Button
             android:id="@+id/btn_search_location"
             android:layout_width="0dip"

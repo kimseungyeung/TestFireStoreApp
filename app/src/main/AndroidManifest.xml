@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -56,6 +57,8 @@
             />
         <activity android:name=".Activity.MapActivity"
            />
+        <activity android:name=".Activity.InsertActivity"
+            />
         <service
             android:name=".FireBaseMessagingService">
             <intent-filter>
