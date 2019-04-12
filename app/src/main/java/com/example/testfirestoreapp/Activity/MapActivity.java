@@ -508,9 +508,8 @@ Location lll;
     public CircleOptions setcircle(LatLng position, double radius) {
         CircleOptions circle = new CircleOptions().center(position)
                 .radius(radius)
-                .strokeWidth(1f)
-                .strokeColor(R.color.colorPrimary)
-                .fillColor(getResources().getColor(R.color.Orange));
+                .strokeWidth(3f)
+                .strokeColor(R.color.skyblue);
 
         return circle;
     }
