@@ -43,6 +43,7 @@ public class InsertActivity extends FragmentActivity implements View.OnClickList
         addFragment(f3);
         nextflag(1);
         component();
+        btn_frag1.setBackgroundColor(getResources().getColor(R.color.skyblue));
     }
 
     public void component() {
@@ -83,14 +84,18 @@ public class InsertActivity extends FragmentActivity implements View.OnClickList
 
     public void nextflag(int index) {
         if (index == 1) {
+
+
             fm.beginTransaction().show(f1).commit();
             fm.beginTransaction().hide(f2).commit();
             fm.beginTransaction().hide(f3).commit();
         } else if (index == 2) {
+
             fm.beginTransaction().hide(f1).commit();
             fm.beginTransaction().show(f2).commit();
             fm.beginTransaction().hide(f3).commit();
         } else if (index == 3) {
+
             fm.beginTransaction().hide(f1).commit();
             fm.beginTransaction().hide(f2).commit();
             fm.beginTransaction().show(f3).commit();
@@ -109,13 +114,9 @@ public class InsertActivity extends FragmentActivity implements View.OnClickList
                     else if(f1.gettest()){
                         btn_frag1.setBackgroundColor(getResources().getColor(R.color.White));
                     }
-                    if (f2 == null) {
-
-                        f2 = new Fragment2();
-                        addFragment(f2);
-                    } else {
+                    btn_frag2.setBackgroundColor(getResources().getColor(R.color.skyblue));
                         nextflag(2);
-                    }
+
                 }
                 if (getVisibleFragment() instanceof Fragment2) {
                     if(!f1.gettest()){
@@ -130,48 +131,63 @@ public class InsertActivity extends FragmentActivity implements View.OnClickList
                     else if(f2.gettest()){
                         btn_frag2.setBackgroundColor(getResources().getColor(R.color.White));
                     }
-                    if (f3 == null) {
-                        f3 = new Fragment3();
-                        addFragment(f3);
-                    } else {
+                    btn_frag3.setBackgroundColor(getResources().getColor(R.color.skyblue));
                         nextflag(3);
-                    }
+
                 }
 
                 break;
             case R.id.btn_prev:
                 if (getVisibleFragment() instanceof Fragment2) {
+                    btn_frag1.setBackgroundColor(getResources().getColor(R.color.skyblue));
+                    btn_frag2.setBackgroundColor(getResources().getColor(R.color.White));
+                    btn_frag3.setBackgroundColor(getResources().getColor(R.color.White));
                     nextflag(1);
                 }
                 if (getVisibleFragment() instanceof Fragment3) {
+                    if(!f1.gettest()){
+                        btn_frag1.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                    }else{
+                        btn_frag1.setBackgroundColor(getResources().getColor(R.color.White));
+                    }
+                    btn_frag2.setBackgroundColor(getResources().getColor(R.color.skyblue));
+                    btn_frag3.setBackgroundColor(getResources().getColor(R.color.White));
                     nextflag(2);
                 }
 
                 break;
             case R.id.btn_frag1:
-                if (f1 != null) {
+                btn_frag1.setBackgroundColor(getResources().getColor(R.color.skyblue));
+                btn_frag2.setBackgroundColor(getResources().getColor(R.color.White));
+                btn_frag3.setBackgroundColor(getResources().getColor(R.color.White));
                     nextflag(1);
-                } else {
-                    f1 = new Fragment1();
-                    addFragment(f1);
-                }
                 break;
             case R.id.btn_frag2:
 
-                if (f2 != null) {
-                    nextflag(2);
-                } else {
-                    f2 = new Fragment2();
-                    addFragment(f2);
-                }
+                if(!f1.gettest()){
+                btn_frag1.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            }else{
+                btn_frag1.setBackgroundColor(getResources().getColor(R.color.White));
+            }
+                btn_frag2.setBackgroundColor(getResources().getColor(R.color.skyblue));
+                btn_frag3.setBackgroundColor(getResources().getColor(R.color.White));
+                nextflag(2);
+
                 break;
             case R.id.btn_frag3:
-                if (f3 != null) {
-                    nextflag(3);
-                } else {
-                    f3 = new Fragment3();
-                    addFragment(f3);
+                if(!f1.gettest()){
+                    btn_frag1.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                }else{
+                    btn_frag1.setBackgroundColor(getResources().getColor(R.color.White));
                 }
+                if(!f2.gettest()){
+                    btn_frag2.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                }else {
+                    btn_frag2.setBackgroundColor(getResources().getColor(R.color.White));
+                }
+                btn_frag3.setBackgroundColor(getResources().getColor(R.color.skyblue));
+                    nextflag(3);
+
                 break;
             case R.id.btn_record:
                 startlisten();
@@ -298,4 +314,17 @@ public class InsertActivity extends FragmentActivity implements View.OnClickList
         }
     };
 
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        if(getVisibleFragment() instanceof Fragment1){
+            finish();
+        }
+        else if(getVisibleFragment() instanceof Fragment2){
+            btn_frag1.performClick();
+        }
+        else if(getVisibleFragment() instanceof Fragment3){
+            btn_frag2.performClick();
+        }
+    }
 }

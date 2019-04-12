@@ -3,6 +3,7 @@ package com.example.testfirestoreapp.Activity;
 import android.Manifest;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -45,6 +46,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.testfirestoreapp.Data.PlaceData;
 import com.example.testfirestoreapp.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -80,13 +87,22 @@ import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.gson.JsonObject;
 
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import io.opencensus.internal.StringUtil;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback, View.OnClickListener, GoogleMap.OnMarkerClickListener, GoogleApiClient.OnConnectionFailedListener {
     private static final LatLngBounds BOUNDS_INDIA = new LatLngBounds(
@@ -110,7 +126,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     Circle circle;
     CircleOptions circleo;
     public boolean checkzoom = true;
-
+Location lll;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -214,6 +230,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     LocationListener lmlistener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
+            lll=location;
             LatLng nowlocation = new LatLng(location.getLatitude(), location.getLongitude());
             if (nowmarker != null) {
                 nowmarker.remove();
@@ -233,7 +250,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
             }
             if (circleo == null) {
-                circleo = setcircle(nowlocation, 1);
+                circleo = setcircle(nowlocation, 250);
             } else {
                 circleo.center(nowlocation);
             }
@@ -310,32 +327,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     }
 
     ;
-    public boolean checktt = false;
-    Thread t = new Thread() {
-        @Override
-        public void run() {
-            super.run();
-            while (true) {
-                try {
 
-                    if (checktt) {
 
-                        Thread.sleep(1000);
-                        set(checktt);
-                        checktt = false;
-                    } else {
-
-                        Thread.sleep(1000);
-                        set(checktt);
-                        checktt = true;
-                    }
-
-                } catch (InterruptedException e) {
-
-                }
-            }
-        }
-    };
 
     @Override
     public void onClick(View v) {
@@ -363,13 +356,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 break;
             case R.id.btn_now_location:
 //                zoomnowlocation();
-                if (check) {
-                    set(true);
-                    check = false;
-                } else {
-                    set(false);
-                    check = true;
-                }
+//                if (check) {
+//                set(true);
+//                check = false;
+//            } else {
+//                set(false);
+//                check = true;
+//            }
+                loadNearByPlaces(ll.latitude,ll.longitude);
                 break;
         }
     }
@@ -765,4 +759,68 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         return distance;
     }
 
+public void setnear(){
+
+}
+    private void loadNearByPlaces(double latitude, double longitude)
+
+//YOU Can change this type at your own will, e.g hospital, cafe, restaurant.... and see how it all works
+    {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        Map<String, String> params = new HashMap<String, String>();
+        JSONObject jsonObj = new JSONObject(params);
+        mMap.clear();
+        Intent i = getIntent();
+        String type = "hospital";
+
+        StringBuilder googlePlacesUrl =
+                new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlacesUrl.append("location=").append(latitude).append(",").append(longitude);
+        googlePlacesUrl.append("&radius=").append(250);
+        googlePlacesUrl.append("&types=").append(type);
+        googlePlacesUrl.append("&sensor=true");
+        googlePlacesUrl.append("&key=" + getString(R.string.API_KEY));
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,googlePlacesUrl.toString(),jsonObj,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject result) {
+                    try {
+                        Log.i("성공", "onResponse: Result= " + result.toString());
+//                        parseLocationResult(result);
+                        JSONArray ja =result.getJSONArray("results");
+
+                        for(int i=0; i<ja.length(); i++){
+                            JSONObject jj = ja.getJSONObject(i);
+                            JSONObject loc=jj.getJSONObject("geometry").getJSONObject("location");
+                            String name = jj.getString("name");
+                            String vic = jj.getString("vicinity");
+                            Double lat =loc.getDouble("lat");
+                            Double lng =loc.getDouble("lng");
+                            try {
+                              List<Address> dd = geocoder.getFromLocation(lat,lng,10);
+                                search(dd.get(0), name, false);
+                            }catch (IOException eee){
+
+                            }
+                            Log.d("이름",name);
+                        }
+                        int k=0;
+                        String s ="1";
+
+                    }catch (JSONException e){
+                        Log.e("에러",e.getMessage().toString());
+                    }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("실패1", "onErrorResponse: Error= " + error);
+                        Log.e("실패2", "onErrorResponse: Error= " + error.getMessage());
+                    }
+                });
+            requestQueue.add(request);
+
+    }
 }

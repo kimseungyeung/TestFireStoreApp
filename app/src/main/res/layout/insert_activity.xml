@@ -14,16 +14,21 @@
             android:id="@+id/btn_frag1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@color/White"
             android:text="f1"/>
         <Button
             android:id="@+id/btn_frag2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@color/White"
+            android:layout_marginRight="1dip"
+            android:layout_marginLeft="1dip"
             android:text="f2"/>
         <Button
             android:id="@+id/btn_frag3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@color/White"
             android:text="f3"/>
     </LinearLayout>
     <FrameLayout
