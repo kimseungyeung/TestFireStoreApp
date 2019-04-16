@@ -1,6 +1,8 @@
 package com.example.testfirestoreapp.Activity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -11,9 +13,12 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.testfirestoreapp.Fragment.Fragment1;
@@ -134,6 +139,22 @@ public class InsertActivity extends FragmentActivity implements View.OnClickList
                     btn_frag3.setBackgroundColor(getResources().getColor(R.color.skyblue));
                         nextflag(3);
 
+                }
+                if (getVisibleFragment() instanceof Fragment3) {
+                    if(f1.gettest()&&f2.gettest()&&f3.gettest()){
+                        String result="";
+                        ArrayList ss =f1.getresult();
+                        ArrayList dd =f2.getresult();
+                       ArrayList ff= f3.getresult();
+                       ss.addAll(dd);
+                       ss.addAll(ff);
+                       for(int i=0; i<ss.size(); i++){
+                           result=result+ss.get(i)+"\n";
+                       }
+                        resultDialog(result);
+                    }else{
+                        resultDialog("입력을 확인하세요");
+                    }
                 }
 
                 break;
@@ -326,5 +347,26 @@ public class InsertActivity extends FragmentActivity implements View.OnClickList
         else if(getVisibleFragment() instanceof Fragment3){
             btn_frag2.performClick();
         }
+    }
+    public void resultDialog(String text) {
+        android.support.v7.app.AlertDialog.Builder dialogBuilder = new android.support.v7.app.AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.result_dialog, null);
+        dialogBuilder.setView(view);
+
+        final android.support.v7.app.AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        alertDialog.setCancelable(false);
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        TextView tv_result = (TextView)view.findViewById(R.id.tv_result);
+        tv_result.setText(text);
+        Button btn_result_ok=(Button)view.findViewById(R.id.btn_result_ok);
+        btn_result_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.cancel();
+            }
+        });
+        alertDialog.show();
     }
 }

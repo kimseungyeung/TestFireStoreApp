@@ -472,19 +472,26 @@ Location lll;
 
     }
 
-    public boolean clickcheck = false;
-
+    Marker prevmarker;
     @Override
     public boolean onMarkerClick(Marker marker) {
         if (marker.getTitle() != null) {
-            if (clickcheck) {
-                clickcheck = false;
+            if(prevmarker!=null){
+            if (prevmarker.equals(marker)) {
                 marker.hideInfoWindow();
                 marker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_location_normal)));
-            } else {
-                clickcheck = true;
+                prevmarker=null;
+            }
+             else {
+                 prevmarker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_location_normal)));
                 marker.showInfoWindow();
                 marker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_location_clicked)));
+                prevmarker=marker;
+            }
+            }else{
+                marker.showInfoWindow();
+                marker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_location_clicked)));
+                prevmarker=marker;
             }
         }
         return true;
@@ -777,6 +784,7 @@ public void setnear(){
         googlePlacesUrl.append("location=").append(latitude).append(",").append(longitude);
         googlePlacesUrl.append("&radius=").append(250);
         googlePlacesUrl.append("&types=").append(type);
+        googlePlacesUrl.append("&language=").append("ko");
         googlePlacesUrl.append("&sensor=true");
         googlePlacesUrl.append("&key=" + getString(R.string.API_KEY));
 
@@ -804,8 +812,6 @@ public void setnear(){
                             }
                             Log.d("이름",name);
                         }
-                        int k=0;
-                        String s ="1";
 
                     }catch (JSONException e){
                         Log.e("에러",e.getMessage().toString());

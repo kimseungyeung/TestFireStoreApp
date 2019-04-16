@@ -11,6 +11,8 @@ import android.widget.EditText;
 
 import com.example.testfirestoreapp.R;
 
+import java.util.ArrayList;
+
 public class Fragment3 extends Fragment {
     EditText edt_hobby,edt_kg;
     @Nullable
@@ -26,6 +28,14 @@ public class Fragment3 extends Fragment {
 
 
 
+    }
+    public ArrayList<String> getresult(){
+        String hobby =edt_hobby.getText().toString();
+        String kg =edt_kg.getText().toString();
+        ArrayList<String> r =new ArrayList<>();
+        r.add(hobby);
+        r.add(kg);
+        return r;
     }
     public boolean gettest(){
         String hobby =edt_hobby.getText().toString();

@@ -13,6 +13,7 @@ import android.widget.EditText;
 
 import com.example.testfirestoreapp.R;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Fragment1 extends Fragment {
@@ -43,7 +44,18 @@ public class Fragment1 extends Fragment {
             return false;
         }
     }
-
+public ArrayList<String> getresult(){
+    String email =edt_email.getText().toString();
+    String password =edt_password.getText().toString();
+    String nickname =edt_nickname.getText().toString();
+    String phone =edt_phone.getText().toString();
+        ArrayList<String> r =new ArrayList<>();
+        r.add(email);
+        r.add(password);
+        r.add(nickname);
+        r.add(phone);
+        return r;
+}
     public EditText getedt(){
         return edt_nickname;
     }

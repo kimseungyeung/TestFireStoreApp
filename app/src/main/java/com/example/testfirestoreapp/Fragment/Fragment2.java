@@ -11,6 +11,8 @@ import android.widget.EditText;
 
 import com.example.testfirestoreapp.R;
 
+import java.util.ArrayList;
+
 public class Fragment2 extends Fragment {
     EditText edt_sex,edt_address,edt_name;
     @Nullable
@@ -27,6 +29,16 @@ public class Fragment2 extends Fragment {
 
 
 
+    }
+    public ArrayList<String> getresult(){
+        String sex =edt_sex.getText().toString();
+        String address =edt_address.getText().toString();
+        String name =edt_name.getText().toString();
+        ArrayList<String> r =new ArrayList<>();
+        r.add(sex);
+        r.add(address);
+        r.add(name);
+        return r;
     }
     public boolean gettest(){
         String sex =edt_sex.getText().toString();
