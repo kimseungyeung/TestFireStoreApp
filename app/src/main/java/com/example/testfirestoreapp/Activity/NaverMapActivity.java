@@ -156,6 +156,7 @@ Handler h = new Handler();
 
 
     }
+    //네이버 디벨로퍼(구버전) 지역검색
         public void searchnear(String t){
             String clientId = "vEnaXmL4l6ZmkwcZS62K";//애플리케이션 클라이언트 아이디값";
             String clientSecret = "Zzg8o4R5WU";//애플리케이션 클라이언트 시크릿값";
@@ -217,6 +218,7 @@ Handler h = new Handler();
                 System.out.println(e);
             }
         }
+        //주소검색
         public LatLng geocoder(String address){
         LatLng lg=null;
         String ncp_clientId = "b3zd0wlx07";//naver cloudplatform id
@@ -291,6 +293,7 @@ Handler h = new Handler();
         }
         return lg;
     }
+    //클라우드 플랫폼 장소검색
     public void nearsearch2(String address,LatLng latLng){
         String latlon=String.valueOf(latLng.longitude)+","+String.valueOf(latLng.latitude);
         String ncp_clientId = "b3zd0wlx07";//naver cloudplatform id
