@@ -22,6 +22,8 @@ import android.widget.EditText;
 import com.example.testfirestoreapp.R;
 import com.naver.maps.geometry.LatLng;
 
+import net.daum.mf.map.api.CameraUpdate;
+import net.daum.mf.map.api.CameraUpdateFactory;
 import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
@@ -38,7 +40,7 @@ import java.net.URLEncoder;
 import java.security.MessageDigest;
 
 public class DaumMapActivity extends AppCompatActivity implements MapView.MapViewEventListener, MapView.POIItemEventListener, View.OnClickListener, MapView.CurrentLocationEventListener {
-    Button btn_nowlocation;
+    Button btn_nowlocation,btn_zoomin,btn_zoomout,btn_searchlocation;
     EditText edt_search_location;
     MapView mapView;
     LocationManager lm;
@@ -61,10 +63,15 @@ public class DaumMapActivity extends AppCompatActivity implements MapView.MapVie
         mapView.setCurrentLocationEventListener(this);
         mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633), true);
         btn_nowlocation=(Button)findViewById(R.id.btn_now_location);
+        btn_searchlocation=(Button)findViewById(R.id.btn_search_location);
+        btn_zoomin=(Button)findViewById(R.id.btn_zoomin);
+        btn_zoomout=(Button)findViewById(R.id.btn_zoomout);
+        btn_searchlocation.setOnClickListener(this);
+        btn_zoomin.setOnClickListener(this);
+        btn_zoomout.setOnClickListener(this);
         edt_search_location= (EditText)findViewById(R.id.edt_search_location);
         btn_nowlocation.setOnClickListener(this);
         lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, lmlistener);
-
         mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
 
     }
@@ -202,9 +209,18 @@ public class DaumMapActivity extends AppCompatActivity implements MapView.MapVie
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_now_location:
+
+                mapView.moveCamera(CameraUpdateFactory.newMapPoint(MapPoint.mapPointWithGeoCoord(now_location.latitude, now_location.longitude),17));
+                break;
+            case R.id.btn_zoomin:
+                mapView.zoomIn(true);
+                break;
+            case R.id.btn_zoomout:
+                mapView.zoomOut(true);
+                break;
+            case R.id.btn_search_location:
                 String text=edt_search_location.getText().toString().trim();
                 new SearchTask(text).execute();
-
                 break;
         }
     }
