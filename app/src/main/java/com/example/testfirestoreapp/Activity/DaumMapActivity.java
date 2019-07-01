@@ -43,6 +43,7 @@ public class DaumMapActivity extends AppCompatActivity implements MapView.MapVie
     MapView mapView;
     LocationManager lm;
     LatLng now_location=null;
+    MapCircle circle1=null;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -211,7 +212,10 @@ public class DaumMapActivity extends AppCompatActivity implements MapView.MapVie
     @Override
     public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float v) {
       now_location= new LatLng(mapPoint.getMapPointGeoCoord().latitude,mapPoint.getMapPointGeoCoord().longitude);
-        MapCircle circle1 = new MapCircle(
+      if(mapView.getCircles().length!=0) {
+          mapView.removeCircle(circle1);
+      }
+      circle1 = new MapCircle(
                 mapPoint, // center
                 250, // radius
                 Color.argb(128, 255, 0, 0), // strokeColor
