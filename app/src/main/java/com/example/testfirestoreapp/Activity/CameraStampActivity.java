@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,8 @@ import android.widget.ImageView;
 
 import com.example.testfirestoreapp.R;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -52,7 +55,15 @@ public class CameraStampActivity extends AppCompatActivity implements View.OnCli
         if (requestCode == 100 && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
+            data.getData();
            Bitmap resultbit=cameramask(imageBitmap);
+           try {
+               FileOutputStream out = new FileOutputStream(Environment.getExternalStorageDirectory().getAbsolutePath()+"/test.jpg");
+               resultbit.compress(Bitmap.CompressFormat.JPEG, 100, out);
+               out.close();
+           }catch (Exception e){
+
+           }
             iv_picture.setImageBitmap(resultbit);
 
 
