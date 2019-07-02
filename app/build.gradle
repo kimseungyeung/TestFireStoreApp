@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.testfirestoreapp"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -63,6 +63,8 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.4.0'
     compileOnly 'org.projectlombok:lombok:1.18.8'
     annotationProcessor "org.projectlombok:lombok:1.18.8"
+    implementation 'com.jakewharton:butterknife:8.7.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
     apply plugin: 'com.google.gms.google-services'
     implementation files('libs/libDaumMapAndroid.jar')
 }
