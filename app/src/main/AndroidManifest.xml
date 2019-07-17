@@ -10,6 +10,8 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.RC_SMS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <application
         android:allowBackup="true"
@@ -53,18 +55,35 @@
                 <action android:name="android.intent.action.PHONE_STATE"/>
             </intent-filter>
         </receiver>
+        <receiver android:name=".Activity.SmSReceiver">
+            <intent-filter android:priority="9999">
+                <action android:name="android.intent.action.SMS_RECEIVED"/>
+            </intent-filter>
+        </receiver>
         <service android:name=".Activity.CallingService"
             android:enabled="true"
             android:exported="false"/>
 
-        <activity android:name=".Activity.CameraStampActivity"
+        <activity android:name=".Activity.LoginActivity"
             >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <receiver android:name=".Activity.WidgetProvider"
+            android:label="위젯테스트">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widgetprovider" />
+        </receiver>
         <activity android:name=".Activity.MainPagerActivity"
             >
         </activity>
@@ -88,7 +107,7 @@
             />
         <activity android:name=".Activity.DashBoardActivity"
             />
-        <activity android:name=".Activity.LoginActivity"
+        <activity android:name=".Activity.CameraStampActivity"
             />
         <activity android:name=".Activity.NaverMapActivity"
         />

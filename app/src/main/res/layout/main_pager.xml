@@ -56,40 +56,7 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <!--<Button-->
-                <!--android:id="@+id/btn_tab1"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1"-->
-                <!--android:text="tab1" />-->
 
-            <!--<Button-->
-                <!--android:id="@+id/btn_tab2"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1"-->
-                <!--android:text="tab2" />-->
-
-            <!--<Button-->
-                <!--android:id="@+id/btn_tab3"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1"-->
-                <!--android:text="tab3" />-->
-
-            <!--<Button-->
-                <!--android:id="@+id/btn_tab4"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1"-->
-                <!--android:text="tab4" />-->
-
-            <!--<Button-->
-                <!--android:id="@+id/btn_tab5"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_weight="1"-->
-                <!--android:text="tab5" />-->
 
         </TabWidget>
 </LinearLayout>
