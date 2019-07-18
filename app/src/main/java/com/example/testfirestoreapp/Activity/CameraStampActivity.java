@@ -36,7 +36,6 @@ public class CameraStampActivity extends AppCompatActivity implements View.OnCli
     ImageView iv_picture;
     private String imageFilePath;
 
-    private String pUri;
     private Uri photoUri;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

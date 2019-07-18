@@ -1,6 +1,7 @@
 package com.example.testfirestoreapp.Activity;
 
 import android.app.ProgressDialog;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -47,7 +49,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     String TAG = "acountset";
     private FirebaseFirestore db;
     CheckBox chk_save_email, chk_auto_login;
-
+    int mAppWidgetId=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +58,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //        FirebaseInstanceId.getInstance().getToken();
         mAuth = FirebaseAuth.getInstance();
         component();
+        Bundle mExtras = getIntent().getExtras();
+
+        if (mExtras != null) {
+
+            mAppWidgetId = mExtras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
+
+                    AppWidgetManager.INVALID_APPWIDGET_ID);
+
+        }
+
+
+
+
+
     }
 
     @Override
@@ -405,4 +421,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             super.onProgressUpdate(values);
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Intent resultValue = new Intent();
+
+        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+
+        setResult(RESULT_OK, resultValue);
+
+        finish();
+    }
 }
+
