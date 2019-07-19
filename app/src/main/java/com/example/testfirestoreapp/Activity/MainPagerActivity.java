@@ -66,12 +66,12 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
     Context context;
     DrawerLayout drawer;
     ListView leftmenu;
-    Button btn_inmenu;
+    Button btn_inmenu,btn_logout;
     InCallback incall;
     FirebaseAuth fa;
     ImageView iv_profile_picture;
     TextView tv_nickname;
-    String[] ddq = {"메뉴1", "메뉴2", "메뉴3", "메뉴4", "메뉴5","메뉴6"};
+    String[] ddq = {"메뉴1", "메뉴2", "메뉴3", "메뉴4", "메뉴5","메뉴6","메뉴7","메뉴8"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,7 +144,9 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
         leftmenu.setAdapter(mm);
 
         btn_inmenu = (Button) findViewById(R.id.btn_inmenu);
+        btn_logout = (Button)findViewById(R.id.btn_logout);
         btn_inmenu.setOnClickListener(this);
+        btn_logout.setOnClickListener(this);
         iv_profile_picture = (ImageView) findViewById(R.id.iv_profile_picture);
         tv_nickname = (TextView) findViewById(R.id.tv_nickname_left);
         fa = FirebaseAuth.getInstance();
@@ -327,6 +329,12 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
                                 break;
                             case "메뉴6":
                                 startActivity(new Intent(context,NaverMapActivity.class));
+                                break;
+                            case "메뉴7":
+                                startActivity(new Intent(context,ImageSetActivity.class));
+                                break;
+                            case "메뉴8":
+                                startActivity(new Intent(context,SettingmenuActivity.class));
                                 break;
                         }
                     }

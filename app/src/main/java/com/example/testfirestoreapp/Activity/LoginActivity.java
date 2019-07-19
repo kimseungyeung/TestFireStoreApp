@@ -231,11 +231,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             String email = edt_email.getText().toString().trim();
                             String password = edt_password.getText().toString();
                             if (chk_save_email.isChecked()) {
-
-                                save_id(email, "");
-                            } if (chk_auto_login.isChecked()) {
+                                if(!chk_auto_login.isChecked()) {
+                                    save_id(email, "");
+                                }else{
+                                    save_id(email, password);
+                                }
+                            } else if (chk_auto_login.isChecked()) {
                                 save_id(email, password);
-                            }  if (!chk_save_email.isChecked()) {
+                            }  else if (!chk_save_email.isChecked()) {
                                 save_id("", "");
                             }
                             String token = FirebaseInstanceId.getInstance().getToken();

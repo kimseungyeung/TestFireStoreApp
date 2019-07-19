@@ -97,6 +97,11 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_launcher_foreground"
             android:background="@drawable/ic_launcher_background"/>
+        <Button
+            android:id="@+id/btn_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="logout"/>
         <TextView
             android:id="@+id/tv_nickname_left"
             android:layout_width="match_parent"

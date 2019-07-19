@@ -113,6 +113,12 @@
         />
         <activity android:name=".Activity.DaumMapActivity"
             />
+        <activity android:name=".Activity.ImageSetActivity"
+            />
+        <activity android:name=".Activity.FullImageActivity"
+            />
+        <activity android:name=".Activity.SettingmenuActivity"
+            />
         <service
             android:name=".FireBaseMessagingService">
             <intent-filter>
