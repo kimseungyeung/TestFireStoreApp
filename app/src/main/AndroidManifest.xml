@@ -119,6 +119,10 @@
             />
         <activity android:name=".Activity.SettingmenuActivity"
             />
+        <activity android:name=".Activity.ChartActivity"
+            />
+        <activity android:name=".Activity.Chart2Activity"
+            />
         <service
             android:name=".FireBaseMessagingService">
             <intent-filter>

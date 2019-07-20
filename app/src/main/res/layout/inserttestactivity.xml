@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue"
+    android:orientation="vertical">
+
+    <Spinner
+        android:id="@+id/spin_1"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:layout_marginTop="10dip"
+        android:layout_marginBottom="10dip"
+        android:background="@color/White"
+        android:entries="@array/spin_1"
+        />
+
+    <Spinner
+        android:id="@+id/spin_2"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:layout_marginBottom="10dip"
+        android:background="@color/White"
+        android:entries="@array/spin_2"/>
+
+    <Spinner
+        android:id="@+id/spin_3"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:layout_marginBottom="10dip"
+        android:background="@color/White"
+        android:entries="@array/spin_3"/>
+
+    <TextView
+        android:id="@+id/tv_result"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:layout_marginBottom="10dip"
+        android:background="@color/quantum_grey" />
+</LinearLayout>
