@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<!--<com.github.mikephil.charting.charts.PieChart-->
+    <!--android:id="@+id/chart1"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="300dip" />-->
+<!--<com.github.mikephil.charting.charts.BarChart-->
+    <!--android:id="@+id/chart2"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="300dip"/>-->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingRight="10dip"
+                android:paddingLeft="10dip">
+                <Button
+                    android:id="@+id/btn_bar"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="일자별"
+                    android:layout_marginRight="10dip"
+                    android:background="@color/quantum_grey"/>
+                <Button
+                    android:id="@+id/btn_pie"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="배당별"
+                    android:background="@color/quantum_grey100"/>
+            </LinearLayout>
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/chart1"
+        android:layout_width="match_parent"
+        android:layout_height="300dip"
+        android:visibility="gone"/>
+    <com.github.mikephil.charting.charts.HorizontalBarChart
+    android:id="@+id/chart2"
+    android:layout_width="match_parent"
+    android:layout_height="300dip"
+        android:visibility="gone"/>
+    <com.github.mikephil.charting.charts.CombinedChart
+        android:id="@+id/chart3"
+        android:layout_width="match_parent"
+        android:layout_height="300dip"
+        />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

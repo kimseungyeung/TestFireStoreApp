@@ -7,6 +7,7 @@
     android:updatePeriodMillis="1000"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
+    android:previewImage="@drawable/db_logo"
      />
 
 

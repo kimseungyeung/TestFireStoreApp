@@ -71,7 +71,7 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
     FirebaseAuth fa;
     ImageView iv_profile_picture;
     TextView tv_nickname;
-    String[] ddq = {"메뉴1", "메뉴2", "메뉴3", "메뉴4", "메뉴5","메뉴6","메뉴7","메뉴8"};
+    String[] ddq = {"메뉴1", "메뉴2", "메뉴3", "메뉴4", "메뉴5","메뉴6","차트1","차트2"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -335,6 +335,12 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
                                 break;
                             case "메뉴8":
                                 startActivity(new Intent(context,SettingmenuActivity.class));
+                                break;
+                            case "차트1":
+                                startActivity(new Intent(context,ChartActivity.class));
+                                break;
+                            case "차트2":
+                                startActivity(new Intent(context,Chart2Activity.class));
                                 break;
                         }
                     }
