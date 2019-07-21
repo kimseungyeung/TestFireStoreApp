@@ -63,7 +63,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
     private BarChart chart;
     Typeface tfLight = Typeface.DEFAULT;
     Typeface tf1 = Typeface.MONOSPACE;
-    String[] test = {"배당", "미결", "종결", "결제"};
+    String[] test = {"반려", "미결", "종결", "결제"};
     String[] test2 = {"월", "화", "수", "목","금"};
     float[] num={0f,10f,20f,30f,40f,50f};
     public static final int[] colorlist = {
@@ -336,19 +336,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
     @Override
     public String getFormattedValue(float value) {
-        if(value==0.0){
-            label=labels[0];
-        }else if(value==0.8f){
-            label=labels[1];
-        }else if(value==1.6f){
-            label=labels[2];
-        }else if(value==2.4f){
-            label=labels[3];
-        }else if(value==3.2f){
-            label=labels[4];
-        }else{
-            label="에러";
-        }
+        label=labels[(int)value];
         return label;
     }
 }
@@ -361,7 +349,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         chart3.setDrawGridBackground(false);
         chart3.setDrawBarShadow(false);
        // chart3.setHighlightFullBarEnabled(false);
-        chart3.animateXY(2000, 2000);
+       // chart3.animateXY(2000, 2000);
         // draw bars behind lines
         chart3.setDrawOrder(new CombinedChart.DrawOrder[]{
                 CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE
@@ -378,32 +366,35 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         YAxis rightAxis = chart3.getAxisRight();
         rightAxis.setDrawGridLines(false);
         rightAxis.setDrawLabels(false);
+
        // rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
         YAxis leftAxis = chart3.getAxisLeft();
         leftAxis.setDrawGridLines(false);
-       // leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+        leftAxis.setLabelCount(5);
+        leftAxis.setAxisMinimum(0f); // 왼쪽바 시작순서 0,10,20 정해주기
 
         XAxis xAxis = chart3.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawAxisLine(true);
-        xAxis.setCenterAxisLabels(true);
-        xAxis.setLabelCount(5);
+       // xAxis.setCenterAxisLabels(true);
+        xAxis.setLabelCount(5,false);
 
-    //    xAxis.setGranularity(1f);
+      //  leftAxis.setAxisMinimum(0f);
+        //xAxis.setGranularity(1f);
 
-        /*xAxis.setValueFormatter(new ValueFormatter() {
+/*        xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
 
-                return week[1];
+                return week[(int)value];
             }
         });*/
         xAxis.setValueFormatter(new getbarvalueformat(test2));
 
         CombinedData data = new CombinedData();
 
-      //  data.setData(generateLineData());
+        data.setData(generateLineData());
        data.setData(generateBarData());
        // data.setData(generateBubbleData());
        // data.setData(generateScatterData());
@@ -412,34 +403,41 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
 
         chart3.setData(data);
-        //chart3.setVisibleXRangeMinimum(5 - 0.81f);
+        chart3.setScaleEnabled(false);
+
+        xAxis.setSpaceMin(0.5f);
+        xAxis.setSpaceMax(0.5f);
 
         chart3.invalidate();
     }
     private LineData generateLineData() {
 
-        LineData d = new LineData();
+            LineData d = new LineData();
 
-        ArrayList<Entry> entries = new ArrayList<>();
+            ArrayList<Entry> entries = new ArrayList<>();
 
-        for (int index = 0; index < count; index++)
-            entries.add(new Entry(index , getRandom(15, 5)));
+            //for (int index = 0; index < count; index++)
+                entries.add(new Entry((float)0,15));
+        entries.add(new Entry((float)1,34));
+        entries.add(new Entry((float)2,13));
+        entries.add(new Entry((float)3,23));
+        entries.add(new Entry((float)4,10));
 
-        LineDataSet set = new LineDataSet(entries, "Line DataSet");
-        set.setColor(Color.rgb(240, 238, 70));
-        set.setLineWidth(2.5f);
-        set.setCircleColor(Color.rgb(240, 238, 70));
-        set.setCircleRadius(5f);
-        set.setFillColor(Color.rgb(240, 238, 70));
-        set.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-        set.setDrawValues(true);
-        set.setValueTextSize(10f);
-        set.setValueTextColor(Color.rgb(240, 238, 70));
+            LineDataSet set = new LineDataSet(entries, "지난 주 실적");
+            set.setColor(Color.rgb(237, 76, 0));
+            set.setLineWidth(2.5f);
+            set.setCircleColor(Color.rgb(237, 76, 0));
+            set.setCircleRadius(5f);
+            set.setFillColor(Color.rgb(237, 76, 0));
+            set.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+            set.setDrawValues(true);
+            set.setValueTextSize(10f);
+            set.setValueTextColor(Color.rgb(237, 76, 0));
 
-        set.setAxisDependency(YAxis.AxisDependency.LEFT);
-        d.addDataSet(set);
+            set.setAxisDependency(YAxis.AxisDependency.LEFT);
+            d.addDataSet(set);
 
-        return d;
+            return d;
     }
 
     private BarData generateBarData() {
@@ -447,15 +445,18 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         ArrayList<BarEntry> entries1 = new ArrayList<>();
        // ArrayList<BarEntry> entries2 = new ArrayList<>();
 
-        for (int index = 0; index < count; index++) {
-            entries1.add(new BarEntry((float) index, getRandom(25, 25)));
 
-            // stacked
+            entries1.add(new BarEntry( 0f, 19));
+        entries1.add(new BarEntry( 1f, 37));
+        entries1.add(new BarEntry( 2f, 15));
+        entries1.add(new BarEntry( 3f, 23));
+        entries1.add(new BarEntry( 4f, 16));
+        // stacked
             //entries2.add(new BarEntry(0, new float[]{getRandom(13, 12), getRandom(13, 12)}));
-        }
 
-        BarDataSet set1 = new BarDataSet(entries1, "실적 명세");
-        set1.setColor(Color.rgb(60, 220, 78));
+
+        BarDataSet set1 = new BarDataSet(entries1, "이번 주 실적");
+        set1.setColor(Color.rgb(0, 156, 61));
         set1.setValueTextColor(Color.rgb(60, 220, 78));
         set1.setValueTextSize(10f);
 
@@ -474,9 +475,8 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         // (0.45 + 0.02) * 2 + 0.06 = 1.00 -> interval per "group"
 
         BarData d = new BarData(set1);
-
         d.setBarWidth(barWidth);
-
+        d.removeDataSet(5);
         // make this BarData object grouped
 //        d.groupBars(1, groupSpace, barSpace); // start at x = 0
 
