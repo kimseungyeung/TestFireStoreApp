@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spin_1">
+        <item>메뉴1</item>
+        <item>메뉴2</item>
+        <item>메뉴3</item>
+        <item>메뉴4</item>
+        <item>메뉴5</item>
+    </string-array>
+    <string-array name="spin_2">
+        <item>2메뉴1</item>
+        <item>2메뉴2</item>
+        <item>2메뉴3</item>
+        <item>2메뉴4</item>
+        <item>2메뉴5</item>
+    </string-array>
+    <string-array name="spin_3">
+        <item>3메뉴1</item>
+        <item>3메뉴2</item>
+        <item>3메뉴3</item>
+        <item>3메뉴4</item>
+        <item>3메뉴5</item>
+
+    </string-array>
+</resources>

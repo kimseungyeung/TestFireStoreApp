@@ -19,5 +19,5 @@
     <string name="menu_5">메뉴5</string>
     <string name="search">검색</string>
     <string name="API_KEY">AIzaSyCyDvMcJ2AJoruWN2qadSKJxe0e875IWnU</string>
-
+    <string name="customer_data">고객정보</string>
 </resources>

@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 
 import com.example.testfirestoreapp.R;
@@ -65,7 +65,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
     Typeface tf1 = Typeface.MONOSPACE;
     String[] test = {"반려", "미결", "종결", "결제"};
     String[] test2 = {"월", "화", "수", "목","금"};
-    float[] num={0f,10f,20f,30f,40f,50f};
+
     public static final int[] colorlist = {
             Color.rgb(219, 0, 0), Color.rgb(255, 94, 0), Color.rgb(47, 157, 39),
             Color.rgb(1, 0, 255), Color.rgb(255, 0, 127)
@@ -407,7 +407,17 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
         xAxis.setSpaceMin(0.5f);
         xAxis.setSpaceMax(0.5f);
+        chart3.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+              // chart3.highlightValue(h);
+            }
 
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
         chart3.invalidate();
     }
     private LineData generateLineData() {
@@ -433,7 +443,6 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
             set.setDrawValues(true);
             set.setValueTextSize(10f);
             set.setValueTextColor(Color.rgb(237, 76, 0));
-
             set.setAxisDependency(YAxis.AxisDependency.LEFT);
             d.addDataSet(set);
 

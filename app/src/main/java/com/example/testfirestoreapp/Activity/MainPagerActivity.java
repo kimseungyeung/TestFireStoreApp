@@ -66,12 +66,12 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
     Context context;
     DrawerLayout drawer;
     ListView leftmenu;
-    Button btn_inmenu,btn_logout;
+    Button btn_inmenu, btn_logout;
     InCallback incall;
     FirebaseAuth fa;
     ImageView iv_profile_picture;
     TextView tv_nickname;
-    String[] ddq = {"메뉴1", "메뉴2", "메뉴3", "메뉴4", "메뉴5","메뉴6","차트1","차트2"};
+    String[] ddq = {"메뉴1", "메뉴2", "메뉴3", "메뉴4", "메뉴5", "메뉴6", "차트1", "차트2", "스핀", "설정"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,15 +81,15 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                     || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
                     ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED||
-                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED||
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                     ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
 
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                         && ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) &&
-                        ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.INTERNET)&&
-                        ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)&&
-                        ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)&&
+                        ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.INTERNET) &&
+                        ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION) &&
+                        ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION) &&
                         ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_NETWORK_STATE)) {
                     //한번권한설정을 거절했을때 나오는부분
                     new AlertDialog.Builder(this).setTitle("알림").setMessage("앱정보->권한\n권한들을 전부 허용해주셔야 앱을 이용할 수 있습니다.")
@@ -113,7 +113,7 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
                     //맨처음 설치시 나오거나 다시보지않기선택시 나오는 부분
                     ActivityCompat.requestPermissions(this,
                             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET
-                                    , Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_NETWORK_STATE},
+                                    , Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_NETWORK_STATE},
                             1);
                 }
             }
@@ -129,14 +129,14 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
         drawer = (DrawerLayout) findViewById(R.id.drawer);
         leftmenu = (ListView) findViewById(R.id.left_menu);
         ArrayList<MenuData> md = new ArrayList<>();
-        boolean df = true;
+        int t = 0;
         for (int i = 0; i < ddq.length; i++) {
             if (i == 0 || i == 2) {
-                df = false;
+                t =1;
             } else {
-                df = true;
+                t = 0;
             }
-            MenuData mm = new MenuData(ddq[i], R.drawable.ic_launcher_foreground, df);
+            MenuData mm = new MenuData(ddq[i], R.drawable.ic_launcher_foreground, t);
             md.add(mm);
         }
 
@@ -144,7 +144,7 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
         leftmenu.setAdapter(mm);
 
         btn_inmenu = (Button) findViewById(R.id.btn_inmenu);
-        btn_logout = (Button)findViewById(R.id.btn_logout);
+        btn_logout = (Button) findViewById(R.id.btn_logout);
         btn_inmenu.setOnClickListener(this);
         btn_logout.setOnClickListener(this);
         iv_profile_picture = (ImageView) findViewById(R.id.iv_profile_picture);
@@ -265,11 +265,24 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
         Context ctx;
         LayoutInflater layoutInflater;
         ArrayList<MenuData> menudatalist;
+        private static final int ITEM_VIEW_TYPE_STRS = 0 ;
+        private static final int ITEM_VIEW_TYPE_IMGS = 1 ;
+        private static final int ITEM_VIEW_TYPE_MAX = 2 ;
 
         public MenuAdapter(Context con, ArrayList<MenuData> menud) {
             this.ctx = con;
             this.menudatalist = menud;
             layoutInflater = (LayoutInflater) con.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return menudatalist.get(position).getMenuType();
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return ITEM_VIEW_TYPE_MAX;
         }
 
         @Override
@@ -291,8 +304,8 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
         public View getView(final int position, View convertView, ViewGroup parent) {
             final ViewHolder holder;
             final ViewHolder2 holder2;
-
-            if (menudatalist.get(position).getMenuType()) {
+            int viewtype = this.getItemViewType(position);
+                if (viewtype==0) {
                 if (convertView == null) {
                     convertView = layoutInflater.inflate(R.layout.item_left_menu, parent, false);
                     holder = new ViewHolder();
@@ -312,35 +325,41 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
                     @Override
                     public void onClick(View v) {
                         Toast.makeText(getApplicationContext(), menudatalist.get(position).getMenuname() + "입니다", Toast.LENGTH_LONG).show();
-                        switch (menudatalist.get(position).getMenuname()){
+                        switch (menudatalist.get(position).getMenuname()) {
                             case "메뉴1":
                                 break;
                             case "메뉴2":
-                                startActivity(new Intent(context,MapActivity.class));
+                                startActivity(new Intent(context, MapActivity.class));
                                 break;
                             case "메뉴3":
 
-                            break;
+                                break;
                             case "메뉴4":
-                                startActivity(new Intent(context,InsertActivity.class));
+                                startActivity(new Intent(context, InsertActivity.class));
                                 break;
                             case "메뉴5":
-                                startActivity(new Intent(context,DashBoardActivity.class));
+                                startActivity(new Intent(context, DashBoardActivity.class));
                                 break;
                             case "메뉴6":
-                                startActivity(new Intent(context,NaverMapActivity.class));
+                                startActivity(new Intent(context, NaverMapActivity.class));
                                 break;
                             case "메뉴7":
-                                startActivity(new Intent(context,ImageSetActivity.class));
+                                startActivity(new Intent(context, ImageSetActivity.class));
                                 break;
                             case "메뉴8":
-                                startActivity(new Intent(context,SettingmenuActivity.class));
+                                startActivity(new Intent(context, SettingmenuActivity.class));
                                 break;
                             case "차트1":
-                                startActivity(new Intent(context,ChartActivity.class));
+                                startActivity(new Intent(context, ChartActivity.class));
                                 break;
                             case "차트2":
-                                startActivity(new Intent(context,Chart2Activity.class));
+                                startActivity(new Intent(context, Chart2Activity.class));
+                                break;
+                            case "스핀":
+                                startActivity(new Intent(context, InsertTestActivity.class));
+                                break;
+                            case "설정":
+                                startActivity(new Intent(context, SettingmenuActivity.class));
                                 break;
                         }
                     }
@@ -381,9 +400,9 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
     public class MenuData {
         private String menuname = "";//메뉴이름
         private int menuicon = 0; //메뉴 아이콘
-        private boolean menutype = true; //메뉴타입 true:일반메뉴 false:타이틀메뉴
+        private int menutype = 0; //메뉴타입 true:일반메뉴 false:타이틀메뉴
 
-        public MenuData(String menun, int menui, boolean menut) {
+        public MenuData(String menun, int menui, int menut) {
             this.menuname = menun;
             this.menuicon = menui;
             this.menutype = menut;
@@ -397,7 +416,7 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
             return menuname;
         }
 
-        public boolean getMenuType() {
+        public int getMenuType() {
             return menutype;
         }
     }
@@ -439,10 +458,11 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
             }
         });
     }
-    public String nowtime(){
-        SimpleDateFormat formatter = new SimpleDateFormat ( "yyyy년MM월dd일 HH시mm분ss초", Locale.KOREA );
-        Date currentTime = new Date ( );
-        String dTime = formatter.format ( currentTime );
+
+    public String nowtime() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy년MM월dd일 HH시mm분ss초", Locale.KOREA);
+        Date currentTime = new Date();
+        String dTime = formatter.format(currentTime);
 
         return dTime;
     }
