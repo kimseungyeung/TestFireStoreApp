@@ -15,6 +15,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -35,6 +36,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Map;
 
 import butterknife.ButterKnife;
@@ -90,21 +92,21 @@ public class CallingService extends Service {
      }else if(phonenumber.equals("010-6646-9774")){
          name="김현";
      }
-    // new DataLoadTask().execute();
-     String text=name+"\n"+phonenumber+"\n"
-             +"계약번호 15-04290928-001"+"\n"
-             +"계약명:무배당 프로미라이프 다이렉트 운전자보험1304"+"\n"
-             +"생년월일: (남)520824"+"\n"
-             +"주소: 지번주소)10938"+"\n" +
-             "경기 파주시 초리읍 두루평로13432 동부금융센터"+"\n"
-             +"보험기간: 2017-09-25~2027-09-25"+"\n"
-             +"만기/납기: 15년만기/15년납기\n"
-             +"가입형태: 개인\n"
-             +"계약상태: 정상\n"
-             +"사고사항: 있음(1)\n"
-             +"보상: 박창수\n"
-             +"조사: 김성근";
-     tv_text.setText(text);
+     new DataLoadTask(tv_text,phonenumber).execute();
+//     String text=name+"\n"+phonenumber+"\n"
+//             +"계약번호 15-04290928-001"+"\n"
+//             +"계약명:무배당 프로미라이프 다이렉트 운전자보험1304"+"\n"
+//             +"생년월일: (남)520824"+"\n"
+//             +"주소: 지번주소)10938"+"\n" +
+//             "경기 파주시 초리읍 두루평로13432 동부금융센터"+"\n"
+//             +"보험기간: 2017-09-25~2027-09-25"+"\n"
+//             +"만기/납기: 15년만기/15년납기\n"
+//             +"가입형태: 개인\n"
+//             +"계약상태: 정상\n"
+//             +"사고사항: 있음(1)\n"
+//             +"보상: 박창수\n"
+//             +"조사: 김성근";
+//     tv_text.setText(text);
         AlertDialog alertDialog = dialogBuilder.create();
         btn_customer_ok.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,61 +156,71 @@ public class CallingService extends Service {
         }
     }
 
-public class DataLoadTask extends AsyncTask<String,String,Boolean> {
+    public class DataLoadTask extends AsyncTask<String,String,String> {
         //httpurl 참조변수
         HttpURLConnection urlConnection =null;
         //url뒤에 붙여서 보낼 파라미터
-        StringBuffer sbparams = new StringBuffer();
-        String result;
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
 
-    @Override
-    protected Boolean doInBackground(String... strings) {
-        try {
-            URL url = new URL("http://localhost:8080/test2");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET"); //전송방식
-            connection.setDoOutput(true);       //데이터를 쓸 지 설정
-            connection.setDoInput(true);        //데이터를 읽어올지 설정
+        String result="";
+        TextView tv_result;
+        String pn="";
+        public DataLoadTask(TextView v,String phonenum){
+            tv_result=v;
+            pn=phonenum;
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
 
-            InputStream is = connection.getInputStream();
-            StringBuilder sb = new StringBuilder();
-            BufferedReader br = new BufferedReader(new InputStreamReader(is,"UTF-8"));
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                URL url = new URL("http://10.167.107.208:8080/test2");
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("POST");
+                StringBuilder sb2 = new StringBuilder();
+                sb2.append(URLEncoder.encode("phonnum","UTF-8"));
+                sb2.append("=");
+                sb2.append(URLEncoder.encode(pn,"UTF-8"));
+                byte [] pd=sb2.toString().getBytes("UTF-8");
+                urlConnection.setDoOutput(true);
+                urlConnection.getOutputStream().write(pd);
 
-            while((result = br.readLine())!=null){
-                sb.append(result+"\n");
+                StringBuilder sb = new StringBuilder();
+
+                String line;
+                BufferedReader br=new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                while ((line=br.readLine()) != null) {
+                    result+=line;
+                }
+
+
+                Log.e("결과",result);
+
+            } catch (MalformedURLException ee) {
+                ee.printStackTrace();
+                result=ee.getMessage().toString();
+                Log.e("MalformedURL에러",ee.getMessage().toString());
+                return result;
+            } catch (IOException e) {
+                e.printStackTrace();
+                result=e.getMessage().toString();
+                Log.e("IOE에러",e.getMessage().toString());
+                return result;
             }
 
-            result = sb.toString();
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+            return result;
         }
 
-        return true;
-    }
-
-    @Override
-    protected void onPostExecute(Boolean aBoolean) {
-        super.onPostExecute(aBoolean);
-        if(aBoolean){
-            int k=0;
-        }else{
-            int d=0;
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Log.e("결과",s);
+            tv_result.setText(s);
 
         }
     }
-
-
-
-}
 }
 
 

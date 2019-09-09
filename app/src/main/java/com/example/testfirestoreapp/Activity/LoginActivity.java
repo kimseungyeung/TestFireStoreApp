@@ -21,6 +21,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.testfirestoreapp.R;
@@ -37,10 +38,24 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     EditText edt_email, edt_password;
@@ -172,8 +187,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     return;
                 }
 
-//                login(login_email, login_password);
+////                login(login_email, login_password);
                 new LoginTask(login_email, login_password).execute();
+
                 break;
         }
     }
@@ -436,5 +452,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         finish();
     }
+
 }
 
