@@ -40,6 +40,5 @@ public class IncomingCallBroadcastReceiver extends BroadcastReceiver {
 
            }
         }
-
     }
 }

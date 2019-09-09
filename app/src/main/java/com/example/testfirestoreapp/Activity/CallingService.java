@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -23,8 +24,18 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.testfirestoreapp.R;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -79,6 +90,7 @@ public class CallingService extends Service {
      }else if(phonenumber.equals("010-6646-9774")){
          name="김현";
      }
+    // new DataLoadTask().execute();
      String text=name+"\n"+phonenumber+"\n"
              +"계약번호 15-04290928-001"+"\n"
              +"계약명:무배당 프로미라이프 다이렉트 운전자보험1304"+"\n"
@@ -142,7 +154,61 @@ public class CallingService extends Service {
         }
     }
 
+public class DataLoadTask extends AsyncTask<String,String,Boolean> {
+        //httpurl 참조변수
+        HttpURLConnection urlConnection =null;
+        //url뒤에 붙여서 보낼 파라미터
+        StringBuffer sbparams = new StringBuffer();
+        String result;
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+    }
 
+    @Override
+    protected Boolean doInBackground(String... strings) {
+        try {
+            URL url = new URL("http://localhost:8080/test2");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET"); //전송방식
+            connection.setDoOutput(true);       //데이터를 쓸 지 설정
+            connection.setDoInput(true);        //데이터를 읽어올지 설정
+
+            InputStream is = connection.getInputStream();
+            StringBuilder sb = new StringBuilder();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is,"UTF-8"));
+
+            while((result = br.readLine())!=null){
+                sb.append(result+"\n");
+            }
+
+            result = sb.toString();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    protected void onPostExecute(Boolean aBoolean) {
+        super.onPostExecute(aBoolean);
+        if(aBoolean){
+            int k=0;
+        }else{
+            int d=0;
+
+        }
+    }
+
+
+
+}
 }
 
 
