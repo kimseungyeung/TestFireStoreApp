@@ -4,7 +4,15 @@
     android:layout_height="match_parent"
     android:background="@color/blue"
     android:orientation="vertical">
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:id="@+id/ll_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
     <Spinner
         android:id="@+id/spin_1"
         android:layout_width="match_parent"
@@ -13,6 +21,8 @@
         android:layout_marginBottom="10dip"
         android:background="@color/White"
         android:entries="@array/spin_1"
+        android:popupBackground="@color/White"
+
         />
 
     <Spinner
@@ -21,7 +31,8 @@
         android:layout_height="50dip"
         android:layout_marginBottom="10dip"
         android:background="@color/White"
-        android:entries="@array/spin_2"/>
+        android:entries="@array/spin_2"
+        android:spinnerMode="dialog"/>
 
     <Spinner
         android:id="@+id/spin_3"
@@ -30,11 +41,44 @@
         android:layout_marginBottom="10dip"
         android:background="@color/White"
         android:entries="@array/spin_3"/>
-
+    </LinearLayout>
+<LinearLayout
+    android:id="@+id/ll_2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_below="@+id/ll_1"
+    >
     <TextView
         android:id="@+id/tv_result"
-        android:layout_width="match_parent"
+        android:layout_width="0dip"
         android:layout_height="50dip"
         android:layout_marginBottom="10dip"
-        android:background="@color/quantum_grey" />
+        android:background="@color/quantum_grey"
+        android:textColor="@color/White"
+        android:layout_weight="4"/>
+<Button
+    android:id="@+id/btn_result"
+    android:layout_width="0dip"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"/>
+</LinearLayout>
+    <EditText
+        android:id="@+id/edt_record"
+        android:layout_width="match_parent"
+        android:layout_height="300dip"
+        android:layout_margin="10dip"
+        android:background="@color/White"
+        android:layout_below="@id/ll_2"
+        android:gravity="top"
+        android:paddingLeft="10dip"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="80dip"
+        android:layout_marginRight="10dip"/>
+</RelativeLayout>
 </LinearLayout>
