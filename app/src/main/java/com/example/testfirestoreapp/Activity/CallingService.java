@@ -66,12 +66,7 @@ public class CallingService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Context mContext = getApplicationContext();
-        LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.call_dialog, null);
 
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
-        dialogBuilder.setView(view);
       String phonenumber=  intent.getStringExtra(EXTRA_CALL_NUMBER);
      /*   dialogBuilder.setMessage(phonenumber);
         dialogBuilder.setCancelable(false);
@@ -81,18 +76,8 @@ public class CallingService extends Service {
 
             }
         });*/
-     TextView tv_text=(TextView)view.findViewById(R.id.tv_text);
-     Button btn_customer_ok=(Button)view.findViewById(R.id.btn_customer_ok);
-        Button btn_customer_view=(Button)view.findViewById(R.id.btn_customer_view);
-     String name="";
-     if(phonenumber.equals("010-9930-1510")){
-         name="안성수";
-     }else if(phonenumber.equals("010-9525-9533")){
-         name="전성하";
-     }else if(phonenumber.equals("010-6646-9774")){
-         name="김현";
-     }
-     new DataLoadTask(tv_text,phonenumber).execute();
+
+     new DataLoadTask(phonenumber).execute();
 //     String text=name+"\n"+phonenumber+"\n"
 //             +"계약번호 15-04290928-001"+"\n"
 //             +"계약명:무배당 프로미라이프 다이렉트 운전자보험1304"+"\n"
@@ -106,36 +91,7 @@ public class CallingService extends Service {
 //             +"사고사항: 있음(1)\n"
 //             +"보상: 박창수\n"
 //             +"조사: 김성근";
-//     tv_text.setText(text);
-        AlertDialog alertDialog = dialogBuilder.create();
-        btn_customer_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            alertDialog.dismiss();
-            }
-        });
-        btn_customer_view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(mContext,LoginActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                if(Build.VERSION_CODES.O< Build.VERSION.SDK_INT) {
 
-                    startActivity(i);
-                }else{
-
-                    startActivity(i);
-                }
-                alertDialog.dismiss();
-            }
-        });
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//8.0
-            alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY - 1);
-        } else {
-            alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
-        }
-        alertDialog.setCanceledOnTouchOutside(false);
-        alertDialog.show();
 
         return START_REDELIVER_INTENT;
     }
@@ -162,10 +118,10 @@ public class CallingService extends Service {
         //url뒤에 붙여서 보낼 파라미터
 
         String result="";
-        TextView tv_result;
+
         String pn="";
-        public DataLoadTask(TextView v,String phonenum){
-            tv_result=v;
+        public DataLoadTask(String phonenum){
+
             pn=phonenum;
         }
         @Override
@@ -217,8 +173,53 @@ public class CallingService extends Service {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             Log.e("결과",s);
-            tv_result.setText(s);
+            Context mContext = getApplicationContext();
+            LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.call_dialog, null);
 
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
+            dialogBuilder.setView(view);
+            TextView tv_text=(TextView)view.findViewById(R.id.tv_text);
+            Button btn_customer_ok=(Button)view.findViewById(R.id.btn_customer_ok);
+            Button btn_customer_view=(Button)view.findViewById(R.id.btn_customer_view);
+            String name="";
+            if(pn.equals("010-9930-1510")){
+                name="안성수";
+            }else if(pn.equals("010-9525-9533")){
+                name="전성하";
+            }else if(pn.equals("010-6646-9774")){
+                name="김현";
+            }
+            tv_text.setText(name+"\n"+s);
+            AlertDialog alertDialog = dialogBuilder.create();
+            btn_customer_ok.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+            btn_customer_view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(mContext,LoginActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    if(Build.VERSION_CODES.O< Build.VERSION.SDK_INT) {
+
+                        startActivity(i);
+                    }else{
+
+                        startActivity(i);
+                    }
+                    alertDialog.dismiss();
+                }
+            });
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//8.0
+                alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY - 1);
+            } else {
+                alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
+            }
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.show();
         }
     }
 }
