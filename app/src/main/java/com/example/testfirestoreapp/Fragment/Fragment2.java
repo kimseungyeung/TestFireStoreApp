@@ -41,13 +41,13 @@ public class Fragment2 extends Fragment {
         return r;
     }
     public boolean gettest(){
-        String sex =edt_sex.getText().toString();
-        String address =edt_address.getText().toString();
-        String name =edt_name.getText().toString();
-        if(!sex.equals("")&&!address.equals("")&&!name.equals("")){
-            return true;
-        }
-        else{
+            String sex =edt_sex.getText().toString();
+            String address =edt_address.getText().toString();
+            String name =edt_name.getText().toString();
+            if(!sex.equals("")&&!address.equals("")&&!name.equals("")){
+                return true;
+            }
+            else{
             return false;
         }
     }
