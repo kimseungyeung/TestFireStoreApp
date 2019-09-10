@@ -29,7 +29,7 @@ public class IncomingCallBroadcastReceiver extends BroadcastReceiver {
             String incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
 
             if (incomingNumber!=null) {
-
+                Log.e("진행2",incomingNumber);
                 final String phone_number = PhoneNumberUtils.formatNumber(incomingNumber);
                 Intent serviceIntent = new Intent(context, CallingService.class);
                 serviceIntent.putExtra(CallingService.EXTRA_CALL_NUMBER, phone_number);
