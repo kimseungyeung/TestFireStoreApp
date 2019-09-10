@@ -335,7 +335,8 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
 
                                 break;
                             case "메뉴4":
-                                startActivity(new Intent(context, InsertActivity.class));
+                                //startActivity(new Intent(context, InsertActivity.class));
+                                startActivity(new Intent(context,FragmentTestActivity.class));
                                 break;
                             case "메뉴5":
                                 startActivity(new Intent(context, DashBoardActivity.class));

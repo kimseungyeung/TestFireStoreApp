@@ -130,6 +130,8 @@
         <activity android:name=".Activity.Chart2Activity"
             />
         <activity android:name=".Activity.InsertTestActivity"
+        />
+        <activity android:name=".Activity.FragmentTestActivity"
             />
         <service
             android:name=".FireBaseMessagingService">
