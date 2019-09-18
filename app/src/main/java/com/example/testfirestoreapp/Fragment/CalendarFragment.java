@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.testfirestoreapp.Activity.LoginActivity;
 import com.example.testfirestoreapp.Adapter.CalendarAdapter;
+import com.example.testfirestoreapp.Data.CustomerData;
 import com.example.testfirestoreapp.R;
 
 import java.io.BufferedReader;
@@ -62,18 +63,19 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         final SimpleDateFormat curYearFormat = new SimpleDateFormat("yyyy", Locale.KOREA);
         final SimpleDateFormat curMonthFormat = new SimpleDateFormat("MM", Locale.KOREA);
         final SimpleDateFormat curDayFormat = new SimpleDateFormat("dd", Locale.KOREA);
+        final SimpleDateFormat allDayFormat = new SimpleDateFormat("yy-MM-dd", Locale.KOREA);
         nowyear=Integer.parseInt(curYearFormat.format(date));
         nowmonth=Integer.parseInt(curMonthFormat.format(date));
         nowdate=Integer.parseInt(curDayFormat.format(date));
         mcal=Calendar.getInstance();
         mcal.set(nowyear,nowmonth-1,1);
-
+        List<CustomerData> clist= new ArrayList<>();
         int daynum=mcal.get(Calendar.DAY_OF_WEEK)-1;
         mcal.add(Calendar.DAY_OF_MONTH,-daynum);
         int lastdate=mcal.getActualMaximum(Calendar.DAY_OF_MONTH);
         gr_calendar=(GridView)v.findViewById(R.id.gr_calendar);
         tv_date=(TextView)v.findViewById(R.id.tv_date);
-        tv_date.setText(curMonthFormat.format(date)+"월"+":"+Integer.toString(daynum)+":"+lastdate);
+        tv_date.setText(nowyear+"년"+"/"+nowmonth+"월");
         btn_nextmonth=(Button)v.findViewById(R.id.btn_nextmonth);
         btn_prevmonth=(Button)v.findViewById(R.id.btn_prevmonth);
         btn_nextmonth.setOnClickListener(this);
@@ -83,14 +85,30 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
             daylist.add(mcal.getTime());
             mcal.add(Calendar.DAY_OF_MONTH,1);
         }
-        int c=0;
-        cadapter=new CalendarAdapter(getActivity(),daylist,nowmonth);
+        CustomerData c1 =new CustomerData();
+        c1.setName("김씨");
+        c1.setDate("19-09-01");
+        c1.setPhonenum("01089071519");
+        CustomerData c2 =new CustomerData();
+        c2.setName("조씨");
+        c2.setDate("19-09-09");
+        c2.setPhonenum("01065461539");
+        CustomerData c3 =new CustomerData();
+        c3.setName("박씨");
+        c3.setDate("19-09-19");
+        c3.setPhonenum("01099651529");
+        clist.add(c1);
+        clist.add(c2);
+        clist.add(c3);
+        cadapter=new CalendarAdapter(getActivity(),daylist,clist,nowmonth);
 
         gr_calendar.setAdapter(cadapter);
         gr_calendar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(),""+cadapter.getItem(position),Toast.LENGTH_LONG).show();
+                String s= cadapter.getdata(allDayFormat.format(cadapter.getItem(position)));
+                if(!s.equals(""))
+                Toast.makeText(getContext(),""+s,Toast.LENGTH_LONG).show();
             }
         });
     }

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.example.testfirestoreapp.Data.CustomerData;
 import com.example.testfirestoreapp.R;
 
 import org.w3c.dom.Text;
@@ -29,7 +30,8 @@ public class CalendarAdapter extends BaseAdapter  {
     private SimpleDateFormat all;
     private int nowmonth;
     private Date nowDate;
-    public CalendarAdapter(Context ctx,List<Date>dlist,int nmonth){
+    private List<CustomerData>clist;
+    public CalendarAdapter(Context ctx, List<Date>dlist, List<CustomerData> cl, int nmonth){
         this.datelist=dlist;
         this.context=ctx;
         this.inflater=(LayoutInflater)ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -40,6 +42,7 @@ public class CalendarAdapter extends BaseAdapter  {
         this.nowmonth=nmonth;
         this.nowDate=new Date(System.currentTimeMillis());
         this.nowDate.setMonth(this.nowDate.getMonth());
+        this.clist=cl;
     }
 
     @Override
@@ -60,7 +63,9 @@ public class CalendarAdapter extends BaseAdapter  {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder=null;
+        String s=all.format(getItem(position));
         int m=Integer.parseInt(month.format(getItem(position)));
+
         if(convertView==null){
             convertView=inflater.inflate(R.layout.item_calendar_date,null);
             holder=new ViewHolder();
@@ -82,6 +87,11 @@ public class CalendarAdapter extends BaseAdapter  {
         }else{
             holder.tv_item_date.setTextColor(context.getResources().getColor(R.color.black));
         }
+        for(int d=0; d<clist.size(); d++){
+            if(s.equals(clist.get(d).getDate())){
+                holder.tv_item_date.append("\n"+clist.get(d).getName());
+            }
+        }
         return convertView;
     }
 
@@ -98,5 +108,15 @@ public class CalendarAdapter extends BaseAdapter  {
             c.add(Calendar.DAY_OF_MONTH,1);
         }
         notifyDataSetChanged();
+    }
+
+    public String getdata(String date){
+        String aa="";
+        for(int k=0; k<clist.size(); k++) {
+            if(clist.get(k).getDate().equals(date)) {
+                aa=clist.get(k).getName();
+            }
+        }
+        return aa;
     }
 }
