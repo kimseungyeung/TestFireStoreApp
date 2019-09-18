@@ -342,7 +342,7 @@ public class MainPagerActivity extends TabActivity implements View.OnClickListen
                                 startActivity(new Intent(context, DashBoardActivity.class));
                                 break;
                             case "메뉴6":
-                                startActivity(new Intent(context, NaverMapActivity.class));
+                                startActivity(new Intent(context, DaumMapActivity.class));
                                 break;
                             case "메뉴7":
                                 startActivity(new Intent(context, ImageSetActivity.class));

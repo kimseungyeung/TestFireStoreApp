@@ -34,6 +34,7 @@ public class InsertTestActivity extends AppCompatActivity implements  AdapterVie
     Intent i;
     EditText edt_record;
     FloatingActionButton fab_record;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

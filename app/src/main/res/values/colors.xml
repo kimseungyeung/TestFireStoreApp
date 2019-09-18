@@ -9,4 +9,5 @@
     <color name="black">#000000</color>
     <color name="rowgrey">#EAEAEA</color>
     <color name="skyblue">#00D8FF</color>
+    <color name="transparent">#00ff0000</color>
 </resources>

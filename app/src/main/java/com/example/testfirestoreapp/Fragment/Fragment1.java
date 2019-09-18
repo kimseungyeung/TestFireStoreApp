@@ -11,73 +11,78 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.example.testfirestoreapp.Activity.FragmentTestActivity;
 import com.example.testfirestoreapp.R;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Fragment1 extends Fragment {
-    EditText edt_email,edt_password,edt_nickname,edt_phone;
+    EditText edt_email, edt_password, edt_nickname, edt_phone;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view =inflater.inflate(R.layout.insert_fragment,null);
+        View view = inflater.inflate(R.layout.insert_fragment, null);
         component(view);
         return view;
     }
-    public void component(View v){
-        edt_email =(EditText)v.findViewById(R.id.edt_create_email);
-        edt_password =(EditText)v.findViewById(R.id.edt_create_password);
-        edt_nickname =(EditText)v.findViewById(R.id.edt_create_nickname);
-        edt_phone =(EditText)v.findViewById(R.id.edt_create_phonenum);
+
+    public void component(View v) {
+        edt_email = (EditText) v.findViewById(R.id.edt_create_email);
+        edt_password = (EditText) v.findViewById(R.id.edt_create_password);
+        edt_nickname = (EditText) v.findViewById(R.id.edt_create_nickname);
+        edt_phone = (EditText) v.findViewById(R.id.edt_create_phonenum);
 
     }
-    public boolean gettest(){
-        String email =edt_email.getText().toString();
-        String password =edt_password.getText().toString();
-        String nickname =edt_nickname.getText().toString();
-        String phone =edt_phone.getText().toString();
-        if(!email.equals("")&&!password.equals("")&&!nickname.equals("")&&!phone.equals("")){
+
+    public boolean gettest() {
+        String email = edt_email.getText().toString();
+        String password = edt_password.getText().toString();
+        String nickname = edt_nickname.getText().toString();
+        String phone = edt_phone.getText().toString();
+        if (!email.equals("") && !password.equals("") && !nickname.equals("") && !phone.equals("")) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
-public ArrayList<String> getresult(){
-    String email =edt_email.getText().toString();
-    String password =edt_password.getText().toString();
-    String nickname =edt_nickname.getText().toString();
-    String phone =edt_phone.getText().toString();
-        ArrayList<String> r =new ArrayList<>();
+
+    public ArrayList<String> getresult() {
+        String email = edt_email.getText().toString();
+        String password = edt_password.getText().toString();
+        String nickname = edt_nickname.getText().toString();
+        String phone = edt_phone.getText().toString();
+        ArrayList<String> r = new ArrayList<>();
         r.add(email);
         r.add(password);
         r.add(nickname);
         r.add(phone);
         return r;
-}
-    public EditText getedt(){
+    }
+
+    public EditText getedt() {
         return edt_nickname;
     }
-    public void setd(String voice){
-        if(voice.equals("이메일입력")){
+
+    public void setd(String voice) {
+        if (voice.equals("이메일입력")) {
             edt_email.setFocusable(true);
         }
-        if(voice.equals("패스워드입력")){
+        if (voice.equals("패스워드입력")) {
             edt_password.setFocusable(true);
         }
-        if(voice.equals("닉네임입력")){
+        if (voice.equals("닉네임입력")) {
             edt_nickname.setFocusable(true);
         }
-        if(voice.equals("폰입력")){
+        if (voice.equals("폰입력")) {
             edt_phone.setFocusable(true);
-        }
-        else {
-            View view=getActivity().getCurrentFocus();
-            if(view==null){
-                view=edt_email;
+        } else {
+            View view = getActivity().getCurrentFocus();
+            if (view == null) {
+                view = edt_email;
             }
-            switch (view.getId()){
+            switch (view.getId()) {
                 case R.id.edt_create_email:
                     edt_email.setText(voice);
                     edt_password.setFocusable(true);
@@ -97,4 +102,12 @@ public ArrayList<String> getresult(){
             }
         }
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        ((FragmentTestActivity) getActivity()).setdd(edt_email.getText().toString());
+    }
+
+
 }
