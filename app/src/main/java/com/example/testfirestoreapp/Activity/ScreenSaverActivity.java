@@ -15,7 +15,8 @@ public class ScreenSaverActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.guardactiity);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED|WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);//기본 잠금화면보다 이걸먼저 띄우도록 함
+
         btn_close=(Button)findViewById(R.id.btn_close);
         btn_close.setOnClickListener(this);
     }
@@ -27,5 +28,10 @@ public class ScreenSaverActivity extends AppCompatActivity implements View.OnCli
                 finish();
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
     }
 }
