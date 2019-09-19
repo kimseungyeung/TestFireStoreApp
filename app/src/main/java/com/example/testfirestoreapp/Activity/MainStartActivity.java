@@ -30,6 +30,7 @@ import com.example.testfirestoreapp.Constants;
 import com.example.testfirestoreapp.FireBaseMessagingService;
 import com.example.testfirestoreapp.InCallback;
 import com.example.testfirestoreapp.R;
+import com.example.testfirestoreapp.Service.ScreenService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -98,6 +99,10 @@ public class MainStartActivity extends AppCompatActivity implements View.OnClick
 
 //        firebase_Glide(mAuth.getCurrentUser().getEmail(),"profile.jpg",imageView);
         incall.firebaseGlide(mAuth.getCurrentUser().getEmail(),"profile.jpg",imageView,context);
+        Intent intent = new Intent(this, ScreenService.class);
+
+        startService(intent);
+
     }
 
     public void test() {

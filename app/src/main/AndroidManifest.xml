@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.RC_SMS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -56,17 +57,17 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_path" />
         </provider>
-        <receiver android:name=".Activity.IncomingCallBroadcastReceiver">
+        <receiver android:name=".Receiver.IncomingCallBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE"/>
             </intent-filter>
         </receiver>
-        <receiver android:name=".Activity.SmSReceiver">
+        <receiver android:name=".Receiver.SmSReceiver">
             <intent-filter android:priority="9999">
                 <action android:name="android.intent.action.SMS_RECEIVED"/>
             </intent-filter>
         </receiver>
-        <service android:name=".Activity.CallingService"
+        <service android:name=".Service.CallingService"
             android:enabled="true"
             android:exported="false"/>
 
@@ -89,6 +90,12 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widgetprovider" />
+        </receiver>
+
+
+        <receiver android:name=".Receiver.ScreenReceiver"
+            android:label="화면보호기">
+
         </receiver>
         <activity android:name=".Activity.MainPagerActivity"
             >
@@ -133,13 +140,16 @@
         />
         <activity android:name=".Activity.FragmentTestActivity"
             />
+        <activity android:name=".Activity.ScreenSaverActivity"/>
         <service
             android:name=".FireBaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
+        <service android:name=".Service.ScreenService">
 
+        </service>
     </application>
 
 </manifest>
