@@ -1,4 +1,4 @@
-package com.example.testfirestoreapp.Activity;
+package com.example.testfirestoreapp.Receiver;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;

@@ -1,4 +1,4 @@
-package com.example.testfirestoreapp.Activity;
+package com.example.testfirestoreapp.Service;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.testfirestoreapp.Activity.LoginActivity;
 import com.example.testfirestoreapp.R;
 
 import java.io.BufferedReader;
@@ -201,7 +202,7 @@ public class CallingService extends Service {
             btn_customer_view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent i = new Intent(mContext,LoginActivity.class);
+                    Intent i = new Intent(mContext, LoginActivity.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     if(Build.VERSION_CODES.O< Build.VERSION.SDK_INT) {
 

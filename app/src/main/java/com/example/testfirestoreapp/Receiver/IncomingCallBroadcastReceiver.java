@@ -1,4 +1,4 @@
-package com.example.testfirestoreapp.Activity;
+package com.example.testfirestoreapp.Receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.example.testfirestoreapp.Data.CustomerData;
+import com.example.testfirestoreapp.Service.CallingService;
 
 public class IncomingCallBroadcastReceiver extends BroadcastReceiver {
     public static final String TAG = "PHONE STATE";
