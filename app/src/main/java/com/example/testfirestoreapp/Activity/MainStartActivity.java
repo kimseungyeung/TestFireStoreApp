@@ -48,7 +48,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 
-public class MainStartActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainStartActivity extends BaseActivity implements View.OnClickListener {
     public static Context context;
     String TAG = "MainStartActivity";
     int PICK_IMAGE_REQUEST = 1;

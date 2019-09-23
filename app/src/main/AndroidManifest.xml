@@ -95,7 +95,9 @@
 
         <receiver android:name=".Receiver.ScreenReceiver"
             android:label="화면보호기">
-
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
         </receiver>
         <activity android:name=".Activity.MainPagerActivity"
             >
