@@ -75,6 +75,7 @@ public class MainStartActivity extends BaseActivity implements View.OnClickListe
 
 
     public void component() {
+        Constants.userlogin=true;
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         context = getApplicationContext();

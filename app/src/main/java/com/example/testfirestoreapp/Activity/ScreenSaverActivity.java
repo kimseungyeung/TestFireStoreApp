@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import com.example.testfirestoreapp.Constants;
 import com.example.testfirestoreapp.R;
 
 public class ScreenSaverActivity extends AppCompatActivity implements View.OnClickListener {
@@ -26,6 +27,7 @@ public class ScreenSaverActivity extends AppCompatActivity implements View.OnCli
         switch (v.getId()){
             case R.id.btn_close:
                 finish();
+                Constants.checklock=false;
                 break;
         }
     }
