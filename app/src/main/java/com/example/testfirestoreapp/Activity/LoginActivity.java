@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -409,15 +410,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             super.onPreExecute();
         }
 
-        @Override
-        protected Boolean doInBackground(Integer... integers) {
+            @Override
+            protected Boolean doInBackground(Integer... integers) {
 
-            try {
-                login(email, password);
-                result = true;
-            } catch (Exception e) {
-                result = false;
-            }
+                try {
+                    login(email, password);
+                    result = true;
+                } catch (Exception e) {
+                    result = false;
+                }
             try {
                 Thread.sleep(1000);
             } catch (Exception e) {
