@@ -48,6 +48,8 @@ public class IntroActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), new LoginActivity().getClass());
 
             startActivityForResult(intent, 1);
+            overridePendingTransition(0,R.anim.fade_out);
+
         }
     }
     public void component(){
@@ -149,6 +151,7 @@ public class IntroActivity extends AppCompatActivity {
 
                             Intent intent = new Intent(getApplicationContext(), new MainPagerActivity().getClass());
                             startActivityForResult(intent, 1);
+                            overridePendingTransition(0,R.anim.fade_out);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
