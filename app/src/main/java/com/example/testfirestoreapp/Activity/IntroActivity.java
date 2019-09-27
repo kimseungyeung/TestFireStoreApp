@@ -52,6 +52,12 @@ public class IntroActivity extends AppCompatActivity {
 
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     public void component(){
         FirebaseInstanceId.getInstance().getToken();
         db = FirebaseFirestore.getInstance();
