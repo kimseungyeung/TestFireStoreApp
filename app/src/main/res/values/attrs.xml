@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DbLogo">
+        <attr name="lwidth"
+            format="reference|integer"></attr>
+        <attr name="lheight"
+            format="reference|integer"></attr>
+        <attr name="backgroundColor"
+            format="reference|integer"></attr>
+        <attr name="speed"
+            format="reference|integer"></attr>
+    </declare-styleable>
+</resources>

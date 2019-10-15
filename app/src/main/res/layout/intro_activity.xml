@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -9,11 +10,31 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-       android:layout_centerInParent="true"
+       android:layout_alignParentTop="true"
         android:gravity="center"
         android:text="데크시스템"
         android:textColor="@color/White"
         android:textSize="30sp"
+        android:layout_marginTop="100dip"
         android:textStyle="bold" />
+
+    <RelativeLayout
+        android:layout_width="400dip"
+        android:layout_height="400dip"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="2dp"
+        android:orientation="vertical">
+
+
+        <com.example.testfirestoreapp.DbLogo
+            android:layout_width="200dip"
+            android:layout_height="200dip"
+            app:lwidth="50"
+            app:lheight="50"
+            app:backgroundColor="1"
+            app:speed="1"
+            android:background="@color/White"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
 
 </RelativeLayout>

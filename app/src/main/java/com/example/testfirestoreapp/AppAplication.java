@@ -11,7 +11,7 @@ import com.example.testfirestoreapp.Activity.ScreenSaverActivity;
 
 public class AppAplication extends Application {
     Handler h=null;
-    public boolean startact=false;
+    public boolean startact=false; //핸들러 실행여부 체크
     @Override
     public void onCreate() {
         super.onCreate();
